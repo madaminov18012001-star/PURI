@@ -17,7 +17,7 @@
 [hidden]{display:none!important}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.5}
-.app{display:grid;grid-template-columns:minmax(0,1fr) 460px;height:100%}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 420px;height:100%}
 .stage{position:relative;min-width:0;overflow:hidden;background:#0c1015}
 #scene{display:block;width:100%;height:100%;touch-action:none}
 .labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -58,6 +58,13 @@ ul.list li>div{min-width:0}
 ul.list small{color:var(--muted);display:block}
 .chips{display:flex;flex-wrap:wrap;gap:5px}
 .chip{background:var(--chip);border-radius:6px;padding:2px 8px;font-size:12px}
+button.chip{border:0;color:inherit;font-family:inherit;cursor:pointer}button.chip:hover{outline:2px solid #a3162b}
+#gmap{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;background:#e5e3df}
+.gbar{position:absolute;top:10px;left:10px;z-index:6;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 20px)}
+.gbar button{border:1px solid rgba(0,0,0,.15);background:#fff;color:#1f1416;border-radius:999px;padding:7px 12px;font:700 12px var(--body);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.gbar button[aria-pressed="true"]{background:#a3162b;color:#fff}
+.modes{z-index:7}
+.gname{cursor:pointer;color:#a3162b;text-decoration:underline}
 .chip.t1{background:color-mix(in srgb,var(--gold) 22%,transparent);font-weight:700}
 .chip.t2{background:color-mix(in srgb,var(--wine) 14%,transparent);font-weight:600}
 .tag{flex:none;font-size:10.5px;font-weight:800;border-radius:999px;padding:1px 8px;white-space:nowrap}
@@ -83,8 +90,8 @@ ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
 ol.steps b{display:block}
 .muted{color:var(--muted);font-size:12px}
 @media (max-width:900px){
-  .app{grid-template-columns:1fr;grid-template-rows:58vh auto;height:auto}
-  .stage{height:58vh}
+  .app{grid-template-columns:1fr;grid-template-rows:72vh auto;height:auto}
+  .stage{height:72vh}
   .panel{border-left:0;border-top:1px solid var(--line);overflow:visible}
   .head{position:static}
   .note{font-size:10.5px;padding:6px 8px}
@@ -106,7 +113,9 @@ ol.steps b{display:block}
       <input type="checkbox" id="l-ring" hidden>
     </div>
     <div class="note" id="note">Binolar, ko'chalar, kanallar va joylar OpenStreetMap'dan olingan (10.11.2026). Balandligi qavat soni bo'yicha. Qavati ko'rsatilmagan binolar (taxminan 80%) turiga qarab taxminiy balandlikda, kulrangroq rangda. Nuqta yoki yozuvni bossangiz tafsiloti ochiladi.</div>
-    <div class="modes" id="modes" hidden><button id="m-city" aria-pressed="true">Shahar xaritasi</button><button id="m-in" aria-pressed="false">Ichki reja 3D</button></div>
+    <iframe id="gmap" title="Google xarita" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="gbar" id="gbar"><button data-g="all">Butun Toshkent</button><button data-g="seoul">Seul Mun</button><button data-g="magic">Magic City</button><button data-g="blvd">Bulvar</button><button data-g="geo">Gruzin restoranlar</button></div>
+    <div class="modes" id="modes"><button id="m-g" aria-pressed="true">Google xarita</button><button id="m-city" aria-pressed="false">3D xarita</button><button id="m-in" aria-pressed="false" hidden>Ichki reja 3D</button></div>
     <div class="pop" id="pop" hidden><button id="popx" aria-label="Yopish">×</button><h4 id="popt"></h4><div id="popb"></div></div>
   </div>
   <aside class="panel">
@@ -2066,7 +2075,7 @@ const fmt=n=>n.toLocaleString("ru-RU").replace(/,/g," ");
 /* ---------- Sourced facts (2GIS / Yandex / Afisha, read 10.11.2026) ---------- */
 const SITE={
  seoul:{name:"Seul Mun",full:"Seul Mun savdo-sayr majmuasi",addr:"Seul ko'chasi 7/2 (2GIS) · Bahodir ko'chasi 69/1 (Yandex), Yakkasaroy tumani. 3 qavat, Burjar kanali bo'yida.",
-  q:"Seoul Mun",
+  q:"Seoul Mun",gq:"Seoul Mun, Bahodir ko'chasi 69/1, Tashkent",
   facts:[["67","ta joy majmua ichida (kafe, do'kon, bank, salon)","2GIS, 2026"],["10 421","kishi Yandex Xaritada baho qo'ygan, o'rtacha 5,0","2026"],["7 519","kishi 2GIS'da baho qo'ygan, o'rtacha 5,0","2026"]],
   flow:"Ishlab chiquvchi 2024-yilda kuniga 6 000 dan ortiq tashrif buyuruvchini e'lon qilgan (Spot.uz). Kechqurun har soatda ~30 daqiqalik musiqali favvora shousi bo'ladi (Afisha 2023). 2GIS: pullik avtoturargoh, soatiga 10 000 so'm.",
   inside:{
@@ -2076,7 +2085,7 @@ const SITE={
   aud:"Yoshlar (16–30), bolali oilalar, kechki sayr qiluvchilar. Magic City'dan 570 m, oqim bir-biriga o'tadi. Atrofda ofislar kam, kunduzgi tushlik zaif.",
   srcs:[["2GIS","https://2gis.uz/tashkent/firm/70000001080894472/tab/inside"],["Yandex","https://yandex.uz/maps/org/seoul_mun/172903771774/inside/"],["Spot.uz 2024","https://www.spot.uz/ru/2024/03/06/seoul-mun/"]]},
  magic:{name:"Magic City",full:"Magic City parki",addr:"Bobur ko'chasi 174/2, Yakkasaroy/Chilonzor chegarasi. 21 ga park, kirish bepul, 10:00–23:00.",
-  q:"Magic City Tashkent",
+  q:"Magic City Tashkent",gq:"Magic City, Bobur ko'chasi 174, Tashkent",
   facts:[["54 180","kishi Yandex Xaritada baho qo'ygan, o'rtacha 5,0","2026"],["14 355","kishi 2GIS'da baho qo'ygan","2026"],["21 ga","park maydoni","VisitTashkent"]],
   flow:"Rasmiy kunlik raqam yo'q. Baholar soni Seul Mun'dan 5 barobar ko'p, ya'ni shahardagi eng ko'p tashrif buyuriladigan joylardan biri. Oqim dam olish kunlari va kechqurun eng yuqori, ish kunlari kunduzi past. Ichida akvarium, Magic Cinema (6 zal), qasr va favvoralar bor.",
   inside:{"Rasmiy xarita: ovqatlanish (30 ta joy)":["1 Magic Mama","2 Shashleek","3 Ramiz","4 Oqtepa","5 EVOS","6 Wendy's","7 Eden","8 Qo'shni","9 (nomsiz)","10 (nomsiz)","11 Feed Up","12 Bollywood Cafe","13 Madocan","14 Air Waffle","15 Cremerio Milano","16 Bon!","17 Seoul","18 Butcoin","19 Kose Doner","20 Corn dogs","21 Tea house","22 KFC","23 TaSushi","24 L Tea","25 Mondo","26 The Harrys","27 Max Way","28 Moscow Ice Cream","29 Papa Johns","30 Amelios"],
@@ -2086,7 +2095,7 @@ const SITE={
   aud:"Bolali oilalar, viloyat va chet ellik mehmonlar, yoshlar. Chiptali attraksionlar (akvarium ~100–120 ming so'm) borligi xarid qobiliyati o'rtadan yuqori ekanini ko'rsatadi.",
   srcs:[["Yandex","https://yandex.com.ge/web-maps/org/magic_city/208097787637/"],["VisitTashkent","https://visittashkent.uz/?p=134"],["Advantour","https://www.advantour.com/uzbekistan/tashkent/magic-city.htm"]]},
  blvd:{name:"Toshkent City Bulvar",full:"ЖК Boulevard, Toshkent City",addr:"O'qchi / Furqat ko'chalari, Shayxontohur tumani. 7 bino, 1 167 xonadon, 1-qavatlar savdo uchun.",
-  q:"Boulevard Tashkent City",
+  q:"Boulevard Tashkent City",gq:"Tashkent City Boulevard, Tashkent",
   facts:[["1 167","xonadon (7 bino)","Afisha 2021"],["2 500–3 000","kishi/kun, 2021-yil da'vosi, eski","Spot.uz"],["4","kishi 2GIS'da baho qo'ygan","2026"]],
   flow:"Ishlab chiquvchining 2021-yilgi da'vosi: kuniga 2 500, dam olish kunlari 3 000 dan ortiq piyoda. Oqim asosan ofis, mehmonxona va aholidan iborat. Xalqlar do'stligi metrosi yaqin.",
   inside:{"2GIS / Afisha":["Afsona (4,8, O'qchi 4)","Hilton: City21, Tumbler Bar, Shosh","Holiday Inn (O'qchi 3)"],"OSM, 300 m ichida":["Köşebaşı","Baskin-Robbins","Ocean Basket","KFC","Bon!","B&B","Roni Napolitana","Мята Signature","Sirali Kebap","Gōsht","Bridge","Tandiriy"]},
@@ -2172,8 +2181,8 @@ function renderSite(k){
    <div class="kpi"><b>90 ming</b><span>Puri o'rtacha cheki, so'm</span></div>
   </div>
   <section><h3>Restoran va kafelar (${F.list.length} ta)</h3>
-   <div class="chips">${F.list.map(n=>`<span class="chip ${tier(n)?'t'+tier(n):''}">${esc(n)}</span>`).join("")}</div>
-   <p class="muted" style="margin-top:6px">Manba: ${esc(F.src)}. O'rtacha chek: ${CHECK}.</p></section>
+   <div class="chips">${F.list.map(n=>`<button class="chip ${tier(n)?'t'+tier(n):''}" data-q="${esc(n.replace(/\s*\(.*\)$/,"")+", "+S.name+", Tashkent")}">${esc(n)}</button>`).join("")}</div>
+   <p class="muted" style="margin-top:6px">Nomni bossangiz, Google xaritada joyi va manzili ochiladi. Manba: ${esc(F.src)}. O'rtacha chek: ${CHECK}.</p></section>
   <section><h3>Ish joylari va mehmonxonalar</h3><p><b>Ofislar:</b> ${esc(W.off)}<br><b>Mehmonxonalar:</b> ${esc(W.hot)}</p></section>
   <section><h3>Mijozlar oqimi</h3><p>${esc(S.flow)}</p></section>
   ${INTERIORS[k]?`<section><p class="muted">Xaritadagi <b>"Ichki reja 3D"</b> tugmasini bossangiz, ${k==="magic"?"park ichidagi joylar rasmiy xarita bo'yicha":"fudkortdagi har bir joy va 55 m² bo'sh joy"} ko'rinadi.</p></section>`:""}`;
@@ -2212,7 +2221,7 @@ function renderGeo(){
   <p>Puri'ning o'rtacha cheki 90 ming so'm. Shu narxdagi gruzin brendi deyarli yo'q, Puri shu bo'shliqni egallashi mumkin.</p></section>
   <section><h3>Ro'yxat ${tag("2GIS")} ${tag("Yandex")} ${tag("Afisha")} ${tag("OSM")}</h3><div class="tw"><table>
    <tr><th>Nomi</th><th>Manzil</th><th>O'rtacha chek</th><th>Reyting</th><th>Seul Mun'gacha</th></tr>
-   ${GEO.map(g=>`<tr><td><b>${esc(g[0])}</b>${g[5]?`<br><small class="muted">${esc(g[5])}</small>`:""}</td><td>${esc(g[1])}</td><td class="n">${esc(g[2])}</td><td class="n">${esc(g[3])}</td><td class="n">${g[4]!=null?String(g[4]).replace(".",",")+" km":"—"}</td></tr>`).join("")}
+   ${GEO.map(g=>`<tr><td><b class="gname" data-q="${esc(g[0].replace(/\s*\(.*\)$/,"")+", "+g[1]+", Tashkent")}">${esc(g[0])}</b>${g[5]?`<br><small class="muted">${esc(g[5])}</small>`:""}</td><td>${esc(g[1])}</td><td class="n">${esc(g[2])}</td><td class="n">${esc(g[3])}</td><td class="n">${g[4]!=null?String(g[4]).replace(".",",")+" km":"—"}</td></tr>`).join("")}
   </table></div>
   <p class="muted" style="margin-top:6px">Masofa faqat OpenStreetMap'da koordinatasi bor joylar uchun, to'g'ri chiziq bo'yicha. Manbalar: <a href="https://2gis.uz/tashkent/search/%D0%93%D1%80%D1%83%D0%B7%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BA%D1%83%D1%85%D0%BD%D1%8F" target="_blank" rel="noopener">2GIS</a> · <a href="https://www.afisha.uz/uz/restaurants/2026/01/09/gamarjoba" target="_blank" rel="noopener">Afisha, 2026</a> · <a href="https://prokhinkali.com/restaurants/tashkent" target="_blank" rel="noopener">prokhinkali.com</a> · <a href="https://openkitchen.eda.yandex/article/places/guides/gamarjoba-genatsvale-top-georgian-restaurants" target="_blank" rel="noopener">Yandex Eda</a> · <a href="https://www.goldenpages.uz/en/rubrics/?Id=101195" target="_blank" rel="noopener">GoldenPages</a></p></section>`;
 }
@@ -2247,7 +2256,9 @@ function select(k){
   body.innerHTML=k==="cmp"?renderCmp():k==="geo"?renderGeo():k==="plan"?renderPlan():renderSite(k);
   body.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{radius=+b.dataset.r;select(k);updateRings();}));
   document.querySelector(".panel").scrollTop=0;
-  setMode("city");$("#modes").hidden=!(SITE[k]&&INTERIORS[k]);
+  setMode("city");$("#m-in").hidden=!(SITE[k]&&INTERIORS[k]);
+  if(SITE[k])gq(SITE[k].gq,17,k);else if(k==="geo")gq("грузинский ресторан, Ташкент",12,"geo");else gq("Tashkent",12,"all");
+  setView(view==="in"?"g":view);
   if(SITE[k]){flyTo(k);updateLabels();updateRings();if(INTERIORS[k]&&!DATA.poi.some(p=>p.d[k]<=600))setMode("in");}
   else if(k==="cmp")flyOverview();
   try{localStorage.setItem("puri-tab2",k)}catch(e){}
@@ -2391,8 +2402,14 @@ function setMode(m){
     scene.fog.near=cur==="magic"?3000:800;scene.fog.far=cur==="magic"?6500:2500;
   }else if(DATA&&m==="city"){scene.fog.near=3000;scene.fog.far=6500;$("#note").textContent=NOTE_CITY;}
 }
-$("#m-city").addEventListener("click",()=>{setMode("city");flyTo(cur);updateLabels();});
-$("#m-in").addEventListener("click",()=>setMode("in"));
+let view="g";
+function gq(q,z,key){$("#gmap").src="https://maps.google.com/maps?q="+encodeURIComponent(q)+"&z="+(z||16)+"&hl=ru&output=embed";document.querySelectorAll("#gbar button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===key));}
+function setView(v){view=v;const g=v==="g";$("#gmap").hidden=!g;$("#gbar").hidden=!g;$("#m-g").setAttribute("aria-pressed",g);if(g){$("#m-city").setAttribute("aria-pressed",false);$("#m-in").setAttribute("aria-pressed",false);}}
+$("#m-g").addEventListener("click",()=>setView("g"));
+$("#m-city").addEventListener("click",()=>{setView("city");setMode("city");flyTo(cur);updateLabels();});
+$("#m-in").addEventListener("click",()=>{setView("in");setMode("in");});
+$("#gbar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const k=b.dataset.g;if(SITE[k]||k==="geo")select(k);else gq("Tashkent",12,"all");});
+document.addEventListener("click",e=>{const t=e.target.closest("[data-q]");if(!t)return;setView("g");gq(t.dataset.q,18,null);if(matchMedia("(max-width:900px)").matches)$("#stage").scrollIntoView({behavior:"smooth"});});
 
 let fly=null;
 function flyTo(k){if(!DATA)return;const s=DATA.sites[k];startFly(new THREE.Vector3(s[0]+380,560,s[1]+560),new THREE.Vector3(s[0],0,s[1]));}
