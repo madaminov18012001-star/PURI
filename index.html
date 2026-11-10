@@ -3114,10 +3114,10 @@ function pin(cls,txt){return L.divIcon({className:"",html:`<div class="mk ${cls}
 function initMap(){
   if(lmap||!window.L)return;
   lmap=L.map("lmap",{zoomControl:false}).setView([41.305,69.262],13);
-  const street=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
+  const street=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; OpenStreetMap'});
   const img=()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"&copy; Esri, Maxar"});
   const roads=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:.85});
-  const names=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
+  const names=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:19});
   const hybrid=L.layerGroup([img(),roads,names]).addTo(lmap);
   L.control.zoom({position:"topright"}).addTo(lmap);L.control.layers({"Gibrid":hybrid,"Xarita":street,"Sputnik":img()},null,{position:"topright",collapsed:false}).addTo(lmap);
   siteLayer=L.layerGroup().addTo(lmap);recLayer=L.layerGroup().addTo(lmap);geoLayer=L.layerGroup().addTo(lmap);
