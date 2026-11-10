@@ -3025,6 +3025,32 @@ function build(){
   Object.entries(DATA.sites).forEach(([k,s])=>{const pin=new THREE.Mesh(new THREE.CylinderGeometry(3,3,160,10),new THREE.MeshBasicMaterial({color:0xff4a5f}));pin.position.set(s[0],80,s[1]);scene.add(pin);});
   syncRec3D();
   $("#loading").hidden=true;
+  loadEast();
+}
+/* Buildings around the recommended streets (Mirobod, Istiqlol, Shevchenko, TsUM, Alay): loaded live from OpenStreetMap in the viewer's browser */
+async function loadEast(tries=0){
+  const BB="41.282,69.262,41.330,69.292";
+  const q=`[out:json][timeout:90];(way[building](${BB});way[highway~"^(trunk|primary|secondary|tertiary|residential|pedestrian|unclassified)$"](${BB}););out geom tags;`;
+  let j=null;
+  for(const host of ["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"]){
+    try{const r=await fetch(host,{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"}});if(r.ok){j=await r.json();break;}}catch(e){}
+  }
+  if(!j){if(tries<3)setTimeout(()=>loadEast(tries+1),15000*(tries+1));return;}
+  const toP=g=>g.map(n=>ll2xz([n.lat,n.lon]));
+  const inOld=(lat,lon)=>lon<=69.2651&&lat>=41.2884&&lat<=41.3257;
+  const bl=[],rl=[];
+  j.elements.forEach(e=>{if(!e.geometry||e.geometry.length<2)return;const t=e.tags||{};const c=e.geometry[0];if(inOld(c.lat,c.lon))return;
+    if(t.building){let h=parseFloat(t.height),est=false;if(!(h>0)){const lv=parseFloat(t["building:levels"]);if(lv>0)h=lv*3.2;else{est=true;h={apartments:15,residential:15,commercial:12,retail:8,office:20,house:6,garage:3,shed:3}[t.building]||9;}}
+      bl.push({p:toP(e.geometry),h,e:est});}
+    else if(t.highway)rl.push({p:toP(e.geometry),k:t.highway});});
+  ribbons(rl,o=>RW[o.k]||0,0x2a3039,1.2);
+  const geos=[];const col=new THREE.Color();
+  bl.forEach(b=>{if(b.p.length<3)return;let g;try{g=new THREE.ExtrudeGeometry(shapeFrom(b.p),{depth:b.h,bevelEnabled:false});}catch(e){return;}
+    g.rotateX(-Math.PI/2);const t=Math.min(1,b.h/90);
+    if(b.e)col.setRGB(0.30+t*0.1,0.32+t*0.1,0.36+t*0.1);else col.setRGB(0.35+t*0.25,0.45+t*0.3,0.62+t*0.3);
+    const n=g.attributes.position.count,c=new Float32Array(n*3);for(let i=0;i<n;i++){c[i*3]=col.r;c[i*3+1]=col.g;c[i*3+2]=col.b;}
+    g.setAttribute("color",new THREE.BufferAttribute(c,3));if(g.index)g=g.toNonIndexed();geos.push(g);});
+  if(geos.length)scene.add(new THREE.Mesh(THREE.BufferGeometryUtils.mergeBufferGeometries(geos),new THREE.MeshLambertMaterial({vertexColors:true})));
 }
 const KX3=111320*Math.cos(41.307*Math.PI/180);
 const ll2xz=ll=>[(ll[1]-69.2455)*KX3,-(ll[0]-41.307)*111320];
