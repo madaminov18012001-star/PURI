@@ -60,6 +60,13 @@ ul.list small{color:var(--muted);display:block}
 .chip{background:var(--chip);border-radius:6px;padding:2px 8px;font-size:12px}
 button.chip{border:0;color:inherit;font-family:inherit;cursor:pointer}button.chip:hover{outline:2px solid #a3162b}
 #gmap{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;background:#e5e3df}
+.wide{position:absolute;right:10px;top:10px;z-index:7;border:0;background:#a3162b;color:#fff;border-radius:999px;padding:8px 14px;font:700 12px var(--body);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.app.big{grid-template-columns:minmax(0,1fr) 0}.app.big .panel{display:none}
+@media (max-width:900px){.app.big .stage{height:calc(100vh - 20px)}}
+.gbar{max-width:calc(100% - 230px)!important}
+.rec{display:grid;grid-template-columns:28px 1fr;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.rec .no{width:26px;height:26px;border-radius:50%;background:#a3162b;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.rec h4{margin:0;font-size:14px}.rec p{margin:2px 0}
 .gbar{position:absolute;top:10px;left:10px;z-index:6;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 20px)}
 .gbar button{border:1px solid rgba(0,0,0,.15);background:#fff;color:#1f1416;border-radius:999px;padding:7px 12px;font:700 12px var(--body);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .gbar button[aria-pressed="true"]{background:#a3162b;color:#fff}
@@ -114,7 +121,8 @@ ol.steps b{display:block}
     </div>
     <div class="note" id="note">Binolar, ko'chalar, kanallar va joylar OpenStreetMap'dan olingan (10.11.2026). Balandligi qavat soni bo'yicha. Qavati ko'rsatilmagan binolar (taxminan 80%) turiga qarab taxminiy balandlikda, kulrangroq rangda. Nuqta yoki yozuvni bossangiz tafsiloti ochiladi.</div>
     <iframe id="gmap" title="Google xarita" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
-    <div class="gbar" id="gbar"><button data-g="all">Butun Toshkent</button><button data-g="seoul">Seul Mun</button><button data-g="magic">Magic City</button><button data-g="blvd">Bulvar</button><button data-g="geo">Gruzin restoranlar</button></div>
+    <div class="gbar" id="gbar"><button data-g="all">Butun Toshkent</button><button data-g="rec">Tavsiya etilgan joylar</button><button data-g="seoul">Seul Mun</button><button data-g="magic">Magic City</button><button data-g="blvd">Bulvar</button><button data-g="geo">Gruzin restoranlar</button></div>
+    <button class="wide" id="wide" aria-pressed="false">⤢ Xaritani kattalashtirish</button>
     <div class="modes" id="modes"><button id="m-g" aria-pressed="true">Google xarita</button><button id="m-city" aria-pressed="false">3D xarita</button><button id="m-in" aria-pressed="false" hidden>Ichki reja 3D</button></div>
     <div class="pop" id="pop" hidden><button id="popx" aria-label="Yopish">×</button><h4 id="popt"></h4><div id="popb"></div></div>
   </div>
@@ -129,6 +137,7 @@ ol.steps b{display:block}
         <button class="tab" role="tab" data-k="blvd">Bulvar</button>
         <button class="tab" role="tab" data-k="cmp">Taqqoslash</button>
         <button class="tab" role="tab" data-k="geo">Gruzin raqobatchilar</button>
+        <button class="tab" role="tab" data-k="rec">Tavsiya etiladi</button>
         <button class="tab" role="tab" data-k="plan">Strategiya</button>
       </div>
     </div>
@@ -2225,6 +2234,24 @@ function renderGeo(){
   </table></div>
   <p class="muted" style="margin-top:6px">Masofa faqat OpenStreetMap'da koordinatasi bor joylar uchun, to'g'ri chiziq bo'yicha. Manbalar: <a href="https://2gis.uz/tashkent/search/%D0%93%D1%80%D1%83%D0%B7%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BA%D1%83%D1%85%D0%BD%D1%8F" target="_blank" rel="noopener">2GIS</a> · <a href="https://www.afisha.uz/uz/restaurants/2026/01/09/gamarjoba" target="_blank" rel="noopener">Afisha, 2026</a> · <a href="https://prokhinkali.com/restaurants/tashkent" target="_blank" rel="noopener">prokhinkali.com</a> · <a href="https://openkitchen.eda.yandex/article/places/guides/gamarjoba-genatsvale-top-georgian-restaurants" target="_blank" rel="noopener">Yandex Eda</a> · <a href="https://www.goldenpages.uz/en/rubrics/?Id=101195" target="_blank" rel="noopener">GoldenPages</a></p></section>`;
 }
+/* Recommended places (malls with food courts; addresses from 2GIS/Uzum Media/OSM) */
+const REC=[
+ ["Seul Mun","Yakkasaroy","Bahodir ko'chasi 69/1 (Seul ko'chasi 7/2)","Seoul Mun, Tashkent","Tahlil bo'yicha 1-o'rin. 31 ta kafe va restoran bor, gruzin oshxonasi yo'q. Magic City va Next yonida, kechqurun oqim katta.","Bo'sh joy hali aniq emas."],
+ ["Tashkent City Mall","Shayxontohur","Botir Zokirov ko'chasi 7","Tashkent City Mall, Tashkent","Toshkentdagi eng katta savdo markazi. Fudkortda mashhur tarmoqlar bor, IMAX kino, bolalar zonasi. Atrofda ofislar va mehmonxonalar (Hilton, Holiday Inn), kunduzi ham odam bor.","Ijara qimmat bo'lishi mumkin."],
+ ["Samarqand Darvoza","Shayxontohur","Qoratosh ko'chasi 5A","Samarqand Darvoza, Tashkent","5 qavatli markaz, 5 000 o'rinli bepul avtoturargoh, kino va bolalar zonasi. Eski shahar aholisi zich, yaqinida gruzin oshxonasi yo'q.","Xaridorlar narxga sezgir bo'lishi mumkin."],
+ ["Next","Yakkasaroy","Bobur ko'chasi 6","Next mall, Bobur 6, Tashkent","Fudkort, ko'p zalli kino, yonida yil bo'yi ishlaydigan Ice City muz maydoni. Seul Mun'dan 250 m: Seul Mun'da joy bo'lmasa, eng yaqin muqobil.","Seul Mun bilan bitta hudud, ikkalasini birga ochish kerak emas."],
+ ["Compass","Bektemir (shahar janubi)","Kichik halqa yo'li 17","Compass mall, Tashkent","40 000 m², 160 dan ortiq do'kon, fudkort, kino, bouling. Shahar janubida kuchli savdo markazi kam, Puri filiallaridan uzoq.","Markazdan uzoq, asosan mashinada kelishadi."],
+ ["Parus","Chilonzor","Qatortol ko'chasi 60","Parus mall, Tashkent","Chilonzor shahardagi eng zich tumanlardan biri. Qatortol bozori yonida, kun bo'yi odam ko'p.","Markaz eski, fudkort holatini joyida ko'rish kerak."],
+ ["Vega","Yakkasaroy","Shota Rustaveli ko'chasi 150","Vega center, Shota Rustaveli 150, Tashkent","Fudkortda fast-food va restoranlar bor, kino va bolalar xonalari. Janubiy Yakkasaroy aholisi uchun.","PRO.Хинкали Rustaveli ko'chasida (22A/1), lekin uzoqroqda."]
+];
+function renderRec(){
+  return `
+  <section class="verdict"><p><b>Puri yangi filialini ochish uchun tavsiya etiladigan joylar.</b> Hammasi fudkorti bor savdo markazlari, Chimgan filialingizdagidek format. Yunusobod va Mirzo Ulug'bek tumanlari tanlanmadi, chunki u yerda Puri filiallari bor.</p>
+  <p>Xaritada hammasi harf bilan belgilangan (A, B, C...). Nomini bossangiz, aniq joyi va manzili Google xaritada ochiladi.</p></section>
+  <section>${REC.map((r,i)=>`<div class="rec"><span class="no">${String.fromCharCode(65+i)}</span><div><h4 class="gname" data-q="${esc(r[3])}">${esc(r[0])}</h4><p class="muted">${esc(r[1])} tumani · ${esc(r[2])}</p><p>${esc(r[4])}</p><p class="muted"><b>E'tibor bering:</b> ${esc(r[5])}</p></div></div>`).join("")}</section>
+  <section><p class="muted">Tartib mening bahoyim: oqim, fudkort formati, gruzin raqobati yo'qligi va mavjud filiallardan uzoqligi bo'yicha. Kunlik oqim va ijara narxlari ochiq manbalarda yo'q, shartnomadan oldin joyida sanash kerak. Manbalar: <a href="https://uzum.uz/media/torgovyye-tsentry-v-tashkente/" target="_blank" rel="noopener">Uzum Media</a> · <a href="https://weproject.media/en/articles/detail/12-best-shopping-spots-in-tashkent-from-bazaars-to-shopping-malls/" target="_blank" rel="noopener">Weproject</a> · OpenStreetMap · 2GIS</p></section>`;
+}
+function gall(){const q=REC.map(r=>r[3]);$("#gmap").src="https://maps.google.com/maps?saddr="+encodeURIComponent(q[0])+"&daddr="+q.slice(1).map(encodeURIComponent).join("+to:")+"&hl=ru&output=embed";document.querySelectorAll("#gbar button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g==="rec"));}
 function renderPlan(){
   return `
   <section class="verdict"><p><b>Pozitsiya:</b> "Seul Mun'dagi yagona gruzin oshxonasi. Fast-food narxida haqiqiy xinkali." Atrofdagi 30 ga yaqin joyning hammasi burger, pitsa, lavash, sushi yoki turk taomlari. Puri'ning farqi tayyor.</p></section>
@@ -2250,14 +2277,14 @@ function renderPlan(){
   <section><h3>Zaxira variant: Magic City</h3><p>Seul Mun'da 1-qavatda joy bo'lmasa, Magic City ikkinchi tanlov. Oqim eng katta, lekin ish kunlari bo'sh. Park ichidagi ijara shartlari va ish vaqti cheklovlarini oldindan bilib oling.</p></section>`;
 }
 function select(k){
-  cur=k==="cmp"||k==="geo"||k==="plan"?cur:k;
+  cur=k==="cmp"||k==="geo"||k==="plan"||k==="rec"?cur:k;
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k?"true":"false"));
   const body=$("#body");
-  body.innerHTML=k==="cmp"?renderCmp():k==="geo"?renderGeo():k==="plan"?renderPlan():renderSite(k);
+  body.innerHTML=k==="rec"?renderRec():k==="cmp"?renderCmp():k==="geo"?renderGeo():k==="plan"?renderPlan():renderSite(k);
   body.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{radius=+b.dataset.r;select(k);updateRings();}));
   document.querySelector(".panel").scrollTop=0;
   setMode("city");$("#m-in").hidden=!(SITE[k]&&INTERIORS[k]);
-  if(SITE[k])gq(SITE[k].gq,17,k);else if(k==="geo")gq("грузинский ресторан, Ташкент",12,"geo");else gq("Tashkent",12,"all");
+  if(SITE[k])gq(SITE[k].gq,17,k);else if(k==="geo")gq("грузинский ресторан, Ташкент",12,"geo");else if(k==="rec")gall();else gq("Tashkent",12,"all");
   setView(view==="in"?"g":view);
   if(SITE[k]){flyTo(k);updateLabels();updateRings();if(INTERIORS[k]&&!DATA.poi.some(p=>p.d[k]<=600))setMode("in");}
   else if(k==="cmp")flyOverview();
@@ -2406,9 +2433,10 @@ let view="g";
 function gq(q,z,key){$("#gmap").src="https://maps.google.com/maps?q="+encodeURIComponent(q)+"&z="+(z||16)+"&hl=ru&output=embed";document.querySelectorAll("#gbar button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===key));}
 function setView(v){view=v;const g=v==="g";$("#gmap").hidden=!g;$("#gbar").hidden=!g;$("#m-g").setAttribute("aria-pressed",g);if(g){$("#m-city").setAttribute("aria-pressed",false);$("#m-in").setAttribute("aria-pressed",false);}}
 $("#m-g").addEventListener("click",()=>setView("g"));
+$("#wide").addEventListener("click",()=>{const on=!document.querySelector(".app").classList.toggle("big")?false:true;$("#wide").setAttribute("aria-pressed",on);$("#wide").textContent=on?"⤡ Ma'lumotlarni ko'rsatish":"⤢ Xaritani kattalashtirish";setTimeout(()=>{try{resize()}catch(e){}},50);});
 $("#m-city").addEventListener("click",()=>{setView("city");setMode("city");flyTo(cur);updateLabels();});
 $("#m-in").addEventListener("click",()=>{setView("in");setMode("in");});
-$("#gbar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const k=b.dataset.g;if(SITE[k]||k==="geo")select(k);else gq("Tashkent",12,"all");});
+$("#gbar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const k=b.dataset.g;if(SITE[k]||k==="geo"||k==="rec")select(k);else gq("Tashkent",12,"all");});
 document.addEventListener("click",e=>{const t=e.target.closest("[data-q]");if(!t)return;setView("g");gq(t.dataset.q,18,null);if(matchMedia("(max-width:900px)").matches)$("#stage").scrollIntoView({behavior:"smooth"});});
 
 let fly=null;
