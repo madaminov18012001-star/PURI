@@ -3114,9 +3114,12 @@ function pin(cls,txt){return L.divIcon({className:"",html:`<div class="mk ${cls}
 function initMap(){
   if(lmap||!window.L)return;
   lmap=L.map("lmap",{zoomControl:false}).setView([41.305,69.262],13);
-  const street=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'}).addTo(lmap);
-  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"&copy; Esri"});
-  L.control.zoom({position:"topright"}).addTo(lmap);L.control.layers({"Xarita":street,"Sputnik":sat},null,{position:"topright",collapsed:false}).addTo(lmap);
+  const street=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
+  const img=()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"&copy; Esri, Maxar"});
+  const roads=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:.85});
+  const names=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
+  const hybrid=L.layerGroup([img(),roads,names]).addTo(lmap);
+  L.control.zoom({position:"topright"}).addTo(lmap);L.control.layers({"Gibrid":hybrid,"Xarita":street,"Sputnik":img()},null,{position:"topright",collapsed:false}).addTo(lmap);
   siteLayer=L.layerGroup().addTo(lmap);recLayer=L.layerGroup().addTo(lmap);geoLayer=L.layerGroup().addTo(lmap);
   Object.entries(LL).forEach(([k,ll])=>L.marker(ll,{icon:pin("site",SITE[k].name[0])}).bindPopup(`<h4>${esc(SITE[k].full)}</h4>${esc(SITE[k].addr)}<br><a href="${gm(SITE[k].gq)}" target="_blank" rel="noopener">Google Maps'da ochish</a> · <a href="${ym(SITE[k].gq)}" target="_blank" rel="noopener">Yandex</a>`).addTo(siteLayer));
   REC.forEach((r,i)=>{const m=L.marker(r.ll||LL.seoul,{icon:pin("rec",String.fromCharCode(65+i)),zIndexOffset:1000,opacity:r.ll?1:0}).bindPopup(`<h4>${String.fromCharCode(65+i)}. ${esc(r.n)}</h4>${esc(r.dist)} tumani · ${esc(r.addr)}<br>${esc(r.why)}<br><a href="${gm(r.q)}" target="_blank" rel="noopener">Google Maps'da ochish</a> · <a href="${ym(r.q)}" target="_blank" rel="noopener">Yandex</a>`).addTo(recLayer);recMk.push(m);if(!r.ll)geocode(r,m);});
