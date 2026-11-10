@@ -3154,7 +3154,7 @@ function loop(){requestAnimationFrame(loop);
     if(vis){L.el.style.left=((tmp.x+1)/2*w)+"px";L.el.style.top=((1-tmp.y)/2*h)+"px";}});
 }
 loop();
-Promise.resolve(window.__DATA).then(d=>{delete d.sites.riviera;DATA=d;build();
+Promise.resolve(window.__DATA).then(d=>{delete d.sites.riviera;d.poi=d.poi.filter(p=>!/самарканд дарвоза|samarqand darvoza|vega|parus|парус|вега/i.test(p.n||""));DATA=d;build();
   let start="seoul";try{const s=localStorage.getItem("puri-tab2");if(s&&$(`.tab[data-k="${s}"]`))start=s;}catch(e){}
   select(start);if(!SITE[start]){flyTo(cur);updateLabels();updateRings();}
 }).catch(e=>{$("#loading").textContent="Xarita ma'lumotlarini yuklab bo'lmadi. Sahifani yangilang.";});
