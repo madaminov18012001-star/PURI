@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Puri menyu</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="config.js"></script>
+<style>
+:root{--red:#7a1010;--red2:#5c0b0b;--cream:#f7ecdc;--card:#fffaf2;--ink:#2a1a14;--muted:#7d6a5e;--line:#ead9c2;--gold:#f2c94c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--red);color:#fff;padding:18px 16px 14px;text-align:center}
+.logo{font:600 34px/1 Georgia,"Times New Roman",serif;letter-spacing:6px}
+.sub{font-size:11px;letter-spacing:3px;opacity:.85;margin-top:6px}
+nav{position:sticky;top:0;z-index:5;background:var(--red2);display:flex;gap:8px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:18px;padding:7px 14px;font-size:14px}
+nav button.on{background:var(--cream);color:var(--red);border-color:var(--cream);font-weight:600}
+main{padding:4px 12px 110px}
+h2{color:var(--red);font-size:19px;margin:20px 4px 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.it{background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
+.it img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--red);display:block}
+.it .b{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
+.it .n{font-weight:600;font-size:14px;flex:1}
+.it .note{font-size:12px;color:var(--muted);margin-top:2px}
+.it .p{font-weight:700;margin:6px 0 8px}
+.add{border:0;background:var(--red);color:#fff;border-radius:10px;padding:9px;font-size:14px;font-weight:600;width:100%}
+.qty{display:flex;align-items:center;justify-content:space-between;background:var(--red);border-radius:10px;color:#fff}
+.qty button{border:0;background:transparent;color:#fff;font-size:20px;width:40px;height:36px}
+.qty span{font-weight:700}
+#bar{position:fixed;left:12px;right:12px;bottom:12px;z-index:9;display:none}
+#bar button{width:100%;border:0;border-radius:14px;background:var(--red);color:#fff;padding:15px;font-size:16px;font-weight:700;box-shadow:0 4px 14px rgba(90,10,10,.35)}
+#cart{display:none;padding:12px 12px 120px}
+.top{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.top button{border:0;background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--red);font-weight:600}
+.top h1{font-size:20px;margin:0;color:var(--red)}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:12px;padding:8px;margin-bottom:8px}
+.row img{width:56px;height:56px;border-radius:10px;object-fit:cover}
+.row .t{flex:1;font-size:14px}
+.row .t b{display:block}
+.row .qty{width:110px}
+.row .qty button{width:34px;height:32px}
+.sum{display:flex;justify-content:space-between;font-size:17px;font-weight:700;margin:14px 4px}
+fieldset{border:0;margin:0 0 12px;padding:0}
+label{display:block;font-size:13px;color:var(--muted);margin:0 4px 5px}
+input,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px;font-size:16px;color:var(--ink);font-family:inherit}
+textarea{min-height:64px;resize:vertical}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 6px;font-size:14px;color:var(--ink)}
+.seg button.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.hint{font-size:12px;color:var(--muted);margin:6px 4px 0}
+.err{color:#b00020;font-size:13px;margin:4px;display:none}
+#done{display:none;text-align:center;padding:60px 24px}
+#done .ok{font-size:54px}
+#done h1{color:var(--red)}
+</style>
+</head>
+<body>
+<div id="menu">
+  <header><div class="logo">PURI</div><div class="sub">KHINKALI · KHACHAPURI</div></header>
+  <nav id="cats"></nav>
+  <main id="list"></main>
+</div>
+
+<div id="cart">
+  <div class="top"><button onclick="show('menu')">← Menyu</button><h1>Savat</h1></div>
+  <div id="rows"></div>
+  <div class="sum"><span>Jami</span><span id="total"></span></div>
+
+  <fieldset><label>Qanday olasiz?</label>
+    <div class="seg" id="type">
+      <button data-v="delivery" class="on">Yetkazib berish</button>
+      <button data-v="pickup">Olib ketaman</button>
+    </div>
+  </fieldset>
+  <fieldset><label>Filial</label>
+    <div class="seg" id="branch">
+      <button data-v="Yunusobod" class="on">Yunusobod</button>
+      <button data-v="Chimgan">Chimgan SM</button>
+    </div>
+  </fieldset>
+  <fieldset><label for="name">Ismingiz</label><input id="name" autocomplete="name"></fieldset>
+  <fieldset><label for="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
+  <fieldset id="addrBox"><label for="addr">Manzil</label><textarea id="addr" placeholder="Ko'cha, uy, xonadon, mo'ljal"></textarea>
+    <div class="hint">Yetkazish narxi va vaqtini operator qo'ng'iroq qilib aytadi.</div></fieldset>
+  <fieldset><label for="note">Izoh (ixtiyoriy)</label><textarea id="note" placeholder="Masalan: achchiq bo'lmasin"></textarea></fieldset>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="done">
+  <div class="ok">✅</div>
+  <h1>Buyurtma qabul qilindi!</h1>
+  <p id="doneTxt">Operatorimiz tez orada siz bilan bog'lanadi.</p>
+</div>
+
+<div id="bar"><button id="barBtn"></button></div>
+
+<script>
+const tg = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null;
+const API = (window.PURI_CONFIG || {}).api || "";
+let MENU = {cats: [], items: []}, cart = {}, view = "menu", sending = false;
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString("ru-RU").replace(/ |,/g, " ") + " so'm";
+const byId = id => MENU.items.find(i => i.id === id);
+
+if (tg) {
+  tg.ready(); tg.expand();
+  tg.setHeaderColor("#7a1010"); tg.setBackgroundColor("#f7ecdc");
+  try { tg.setBottomBarColor && tg.setBottomBarColor("#f7ecdc"); } catch (e) {}
+  tg.BackButton.onClick(() => show("menu"));
+  tg.MainButton.setParams({color: "#7a1010", text_color: "#ffffff"});
+  tg.MainButton.onClick(onMain);
+  const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (u) $("#name").value = [u.first_name, u.last_name].filter(Boolean).join(" ");
+}
+$("#barBtn").onclick = onMain;
+
+fetch("menu.json").then(r => r.json()).then(m => { MENU = m; render(); });
+
+function render() {
+  $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${c.name}</button>`).join("");
+  $("#cats").onclick = e => { const c = e.target.dataset.c; if (c) document.getElementById("c-" + c).scrollIntoView({behavior: "smooth"}); };
+  $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${c.name}</h2><div class="grid">` +
+    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" src="${i.img}" alt="">
+      <div class="b"><div class="n">${i.name}</div>${i.note ? `<div class="note">${i.note}</div>` : ""}
+      <div class="p">${fmt(i.price)}</div><div id="ctl-${i.id}"></div></div></div>`).join("") + "</div>").join("");
+  MENU.items.forEach(i => ctl(i.id));
+  const heads = [...document.querySelectorAll("h2")];
+  addEventListener("scroll", () => {
+    if (view !== "menu") return;
+    let cur = heads[0];
+    heads.forEach(h => { if (h.getBoundingClientRect().top < 120) cur = h; });
+    document.querySelectorAll("#cats button").forEach(b => {
+      const on = "c-" + b.dataset.c === cur.id; b.classList.toggle("on", on);
+      if (on) b.scrollIntoView({block: "nearest", inline: "center"});
+    });
+  }, {passive: true});
+  update();
+}
+
+function ctl(id) {
+  const q = cart[id] || 0, el = document.getElementById("ctl-" + id);
+  if (!el) return;
+  el.innerHTML = q ? `<div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div>`
+    : `<button class="add" onclick="chg('${id}',1)">Qo'shish</button>`;
+}
+
+function chg(id, d) {
+  cart[id] = Math.max(0, (cart[id] || 0) + d);
+  if (!cart[id]) delete cart[id];
+  if (tg) tg.HapticFeedback.selectionChanged();
+  ctl(id); update();
+  if (view === "cart") { if (!count()) show("menu"); else rows(); }
+}
+const count = () => Object.values(cart).reduce((a, b) => a + b, 0);
+const total = () => Object.entries(cart).reduce((s, [id, q]) => s + byId(id).price * q, 0);
+
+function update() {
+  const n = count();
+  let text = "", visible = false;
+  if (view === "menu" && n) { text = `Savat · ${n} ta · ${fmt(total())}`; visible = true; }
+  if (view === "cart") { text = sending ? "Yuborilmoqda..." : `Buyurtma berish · ${fmt(total())}`; visible = true; }
+  if (tg) {
+    visible ? tg.MainButton.setText(text).show() : tg.MainButton.hide();
+    $("#bar").style.display = "none";
+  } else { $("#bar").style.display = visible ? "block" : "none"; $("#barBtn").textContent = text; }
+}
+
+function rows() {
+  $("#rows").innerHTML = Object.entries(cart).map(([id, q]) => { const i = byId(id);
+    return `<div class="row"><img src="${i.img}" alt=""><div class="t"><b>${i.name}</b>${fmt(i.price * q)}</div>
+    <div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div></div>`; }).join("");
+  $("#total").textContent = fmt(total());
+}
+
+function show(v) {
+  view = v;
+  $("#menu").style.display = v === "menu" ? "block" : "none";
+  $("#cart").style.display = v === "cart" ? "block" : "none";
+  $("#done").style.display = v === "done" ? "block" : "none";
+  if (v === "cart") rows();
+  if (tg) v === "cart" ? tg.BackButton.show() : tg.BackButton.hide();
+  scrollTo(0, 0); update();
+}
+
+document.querySelectorAll(".seg").forEach(s => s.onclick = e => {
+  if (!e.target.dataset.v) return;
+  s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b === e.target));
+  if (s.id === "type") $("#addrBox").style.display = e.target.dataset.v === "delivery" ? "block" : "none";
+});
+const seg = id => document.querySelector(`#${id} .on`).dataset.v;
+
+function err(t) { $("#err").textContent = t; $("#err").style.display = t ? "block" : "none"; if (t && tg) tg.HapticFeedback.notificationOccurred("error"); }
+
+async function onMain() {
+  if (view === "menu") return show("cart");
+  if (view !== "cart" || sending) return;
+  const order = {
+    items: Object.entries(cart).map(([id, qty]) => ({id, qty})),
+    type: seg("type"), branch: seg("branch"),
+    name: $("#name").value.trim(), phone: $("#phone").value.trim(),
+    address: $("#addr").value.trim(), note: $("#note").value.trim(),
+  };
+  if (!order.name) return err("Ismingizni yozing.");
+  if (order.phone.replace(/\D/g, "").length < 9) return err("Telefon raqamni to'liq yozing.");
+  if (order.type === "delivery" && order.address.length < 5) return err("Yetkazish manzilini yozing.");
+  err("");
+  if (!tg || !API) { $("#doneTxt").textContent = "Bu sinov rejimi: buyurtma faqat Telegram ichida yuboriladi."; return show("done"); }
+  sending = true; update(); tg.MainButton.showProgress();
+  try {
+    const r = await fetch(API + "/order", {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({initData: tg.initData, order})});
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "xato");
+    cart = {}; MENU.items.forEach(i => ctl(i.id));
+    $("#doneTxt").textContent = `Buyurtma №${j.number}. Operatorimiz tez orada siz bilan bog'lanadi.`;
+    tg.HapticFeedback.notificationOccurred("success");
+    show("done"); setTimeout(() => tg.close(), 3500);
+  } catch (e) {
+    err("Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib ko'ring.");
+  } finally { sending = false; tg.MainButton.hideProgress(); update(); }
+}
+</script>
+</body>
+</html>
