@@ -4,6 +4,7 @@
 //   ORDERS_CHAT_ID  buyurtmalar tushadigan guruh ID raqami (masalan -1001234567890)
 //   WEBAPP_URL      menyu sahifasi manzili (masalan https://.../bot/)
 //   SETUP_KEY       /setup uchun istalgan maxfiy so'z (Secret)
+//   SHEET_URL       (ixtiyoriy) Google Sheets bazasi uchun Apps Script manzili
 //   CLICK_TOKEN     @BotFather → Payments → Click ulanganda beriladigan token (Secret)
 //   PAYME_TOKEN     @BotFather → Payments → Payme ulanganda beriladigan token (Secret)
 
@@ -83,12 +84,13 @@ async function order(req, env) {
   // Narxlarni menyu faylidan qayta hisoblaymiz (sahifadagi narxga ishonmaymiz)
   const menu = await (await fetch(new URL("menu.json", env.WEBAPP_URL), { cf: { cacheTtl: 300 } })).json();
   const byId = Object.fromEntries(menu.items.map(i => [i.id, i]));
-  const lines = []; let total = 0;
+  const lines = [], plain = []; let total = 0;
   for (const { id, qty } of order.items || []) {
     const it = byId[id], q = Math.min(99, Math.max(0, parseInt(qty) || 0));
     if (!it || !q) continue;
     total += it.price * q;
     lines.push(`• ${esc(it.name)} × ${q} = ${money(it.price * q)}`);
+    plain.push(`${it.name} × ${q}`);
   }
   if (!lines.length) return json({ ok: false, error: "empty" }, 400);
 
@@ -114,7 +116,16 @@ async function order(req, env) {
     order.note ? `💬 ${esc(clip(order.note, 300))}` : "",
   ].filter((l, i, a) => l !== "" || a[i - 1] !== "").join("\n").trim();
 
+  const row = {
+    action: "add", number, date: new Date().toLocaleString("ru-RU", { timeZone: "Asia/Tashkent" }),
+    branch: order.branch === "Chimgan" ? "Chimgan" : "Yunusobod", type: delivery ? "Yetkazib berish" : "Olib ketish",
+    items: plain.join(", "), total, pay: PAY[pay], status: pay === "cash" ? "Yangi" : "To'lov kutilmoqda",
+    name: clip(order.name, 60), phone: clip(order.phone, 30), address: delivery ? clip(order.address, 300) : "",
+    note: clip(order.note, 300), telegram: user.username ? "@" + user.username : String(user.id),
+  };
+
   if (pay === "cash") {
+    await sheet(env, row);
     const sent = await tg(env, "sendMessage", { chat_id: env.ORDERS_CHAT_ID, text: "🆕 " + msg, parse_mode: "HTML", disable_web_page_preview: true });
     if (!sent.ok) return json({ ok: false, error: "send" }, 502);
     await tg(env, "sendMessage", {
@@ -136,6 +147,7 @@ async function order(req, env) {
     prices: [{ label: `Buyurtma №${number}`, amount: total * 100 }],
   });
   if (!inv.ok) return json({ ok: false, error: "invoice" }, 502);
+  await sheet(env, row);
   return json({ ok: true, number, invoice: inv.result });
 }
 
@@ -148,7 +160,16 @@ async function onPaid(m, env) {
     reply_parameters: copy.ok ? { message_id: copy.result.message_id } : undefined,
     text: `🆕✅ <b>№${number} TO'LANDI</b> · ${PAY[pay] || pay} · ${money(p.total_amount / 100)}`,
   });
+  await sheet(env, { action: "paid", number, status: `To'landi (${PAY[pay] || pay})` });
   await tg(env, "sendMessage", { chat_id: m.chat.id, text: `✅ To'lov qabul qilindi! Buyurtma №${number} tayyorlanmoqda. Operatorimiz tez orada qo'ng'iroq qiladi.` });
+}
+
+// Google Sheets bazasiga yozish (SHEET_URL bo'lsa). Xato bo'lsa ham buyurtma to'xtamaydi.
+async function sheet(env, data) {
+  if (!env.SHEET_URL) return;
+  try {
+    await fetch(env.SHEET_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: env.SETUP_KEY, ...data }) });
+  } catch (e) { console.log("sheet", e); }
 }
 
 // Telegram initData imzosini tekshirish: buyurtma haqiqatan bot ichidan kelganini bildiradi
