@@ -13,7 +13,7 @@ html,body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.35 -appl
 header{background:var(--red);color:#fff;padding:18px 16px 14px;text-align:center}
 .logo{font:600 34px/1 Georgia,"Times New Roman",serif;letter-spacing:6px}
 .sub{font-size:11px;letter-spacing:3px;opacity:.85;margin-top:6px}
-nav{position:sticky;top:0;z-index:5;background:var(--red2);display:flex;gap:8px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
+nav{position:sticky;top:0;-webkit-overflow-scrolling:touch;z-index:5;background:var(--red2);display:flex;gap:8px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 nav button{flex:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:18px;padding:7px 14px;font-size:14px}
 nav button.on{background:var(--cream);color:var(--red);border-color:var(--cream);font-weight:600}
@@ -114,7 +114,8 @@ const byId = id => MENU.items.find(i => i.id === id);
 
 if (tg) {
   tg.ready(); tg.expand();
-  tg.setHeaderColor("#7a1010"); tg.setBackgroundColor("#f7ecdc");
+  try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
+  try { tg.setHeaderColor("#7a1010"); tg.setBackgroundColor("#f7ecdc"); } catch (e) {}
   try { tg.setBottomBarColor && tg.setBottomBarColor("#f7ecdc"); } catch (e) {}
   tg.BackButton.onClick(() => show("menu"));
   tg.MainButton.setParams({color: "#7a1010", text_color: "#ffffff"});
@@ -130,18 +131,27 @@ function render() {
   $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${c.name}</button>`).join("");
   $("#cats").onclick = e => { const c = e.target.dataset.c; if (c) document.getElementById("c-" + c).scrollIntoView({behavior: "smooth"}); };
   $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${c.name}</h2><div class="grid">` +
-    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" src="${i.img}" alt="">
+    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" decoding="async" width="480" height="360" src="${i.img}" alt="">
       <div class="b"><div class="n">${i.name}</div>${i.note ? `<div class="note">${i.note}</div>` : ""}
       <div class="p">${fmt(i.price)}</div><div id="ctl-${i.id}"></div></div></div>`).join("") + "</div>").join("");
   MENU.items.forEach(i => ctl(i.id));
   const heads = [...document.querySelectorAll("h2")];
+  // Scroll paytida faqat kategoriya o'zgarganda tugmani yangilaymiz (iPhone'da qotmasligi uchun)
+  let curId = "", ticking = false;
+  const nav = $("#cats");
   addEventListener("scroll", () => {
-    if (view !== "menu") return;
-    let cur = heads[0];
-    heads.forEach(h => { if (h.getBoundingClientRect().top < 120) cur = h; });
-    document.querySelectorAll("#cats button").forEach(b => {
-      const on = "c-" + b.dataset.c === cur.id; b.classList.toggle("on", on);
-      if (on) b.scrollIntoView({block: "nearest", inline: "center"});
+    if (ticking || view !== "menu") return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      let cur = heads[0];
+      for (const h of heads) { if (h.getBoundingClientRect().top < 120) cur = h; else break; }
+      if (cur.id === curId) return;
+      curId = cur.id;
+      nav.querySelectorAll("button").forEach(b => {
+        const on = "c-" + b.dataset.c === curId; b.classList.toggle("on", on);
+        if (on) nav.scrollTo({left: b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2, behavior: "smooth"});
+      });
     });
   }, {passive: true});
   update();
