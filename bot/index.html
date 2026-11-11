@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Puri menyu</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="config.js"></script>
+<script src="config.js?v=3"></script>
 <style>
 :root{--red:#7a1010;--red2:#5c0b0b;--cream:#f7ecdc;--card:#fffaf2;--ink:#2a1a14;--muted:#7d6a5e;--line:#ead9c2;--gold:#f2c94c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -20,7 +20,7 @@ nav button.on{background:var(--cream);color:var(--red);border-color:var(--cream)
 main{padding:4px 12px 110px}
 h2{color:var(--red);font-size:19px;margin:20px 4px 10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.it{background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
+.it{content-visibility:auto;contain-intrinsic-size:auto 260px;background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
 .it img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--red);display:block}
 .it .b{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
 .it .n{font-weight:600;font-size:14px;flex:1}
@@ -125,7 +125,7 @@ if (tg) {
 }
 $("#barBtn").onclick = onMain;
 
-fetch("menu.json").then(r => r.json()).then(m => { MENU = m; render(); });
+fetch("menu.json?v=3").then(r => r.json()).then(m => { MENU = m; render(); });
 
 function render() {
   $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${c.name}</button>`).join("");
@@ -150,7 +150,7 @@ function render() {
       curId = cur.id;
       nav.querySelectorAll("button").forEach(b => {
         const on = "c-" + b.dataset.c === curId; b.classList.toggle("on", on);
-        if (on) nav.scrollTo({left: b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2, behavior: "smooth"});
+        if (on) nav.scrollLeft = b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2;
       });
     });
   }, {passive: true});
