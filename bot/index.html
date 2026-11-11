@@ -81,6 +81,13 @@ textarea{min-height:64px;resize:vertical}
       <button data-v="Chimgan">Chimgan SM</button>
     </div>
   </fieldset>
+  <fieldset><label>To'lov usuli</label>
+    <div class="seg" id="pay">
+      <button data-v="click" class="on">Click</button>
+      <button data-v="payme">Payme</button>
+      <button data-v="cash">Naqd / karta</button>
+    </div>
+    <div class="hint" id="payHint">Buyurtma berish tugmasini bosganingizda to'lov oynasi ochiladi.</div></fieldset>
   <fieldset><label for="name">Ismingiz</label><input id="name" autocomplete="name"></fieldset>
   <fieldset><label for="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
   <fieldset id="addrBox"><label for="addr">Manzil</label><textarea id="addr" placeholder="Ko'cha, uy, xonadon, mo'ljal"></textarea>
@@ -188,6 +195,7 @@ function show(v) {
 document.querySelectorAll(".seg").forEach(s => s.onclick = e => {
   if (!e.target.dataset.v) return;
   s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b === e.target));
+  if (s.id === "pay") $("#payHint").textContent = e.target.dataset.v === "cash" ? "Pulni buyurtmani qabul qilganda to'laysiz." : "Buyurtma berish tugmasini bosganingizda to'lov oynasi ochiladi.";
   if (s.id === "type") $("#addrBox").style.display = e.target.dataset.v === "delivery" ? "block" : "none";
 });
 const seg = id => document.querySelector(`#${id} .on`).dataset.v;
@@ -199,7 +207,7 @@ async function onMain() {
   if (view !== "cart" || sending) return;
   const order = {
     items: Object.entries(cart).map(([id, qty]) => ({id, qty})),
-    type: seg("type"), branch: seg("branch"),
+    type: seg("type"), branch: seg("branch"), pay: seg("pay"),
     name: $("#name").value.trim(), phone: $("#phone").value.trim(),
     address: $("#addr").value.trim(), note: $("#note").value.trim(),
   };
@@ -214,12 +222,16 @@ async function onMain() {
       body: JSON.stringify({initData: tg.initData, order})});
     const j = await r.json();
     if (!j.ok) throw new Error(j.error || "xato");
+    if (j.invoice) {
+      const status = await new Promise(res => tg.openInvoice(j.invoice, res));
+      if (status !== "paid") { err(status === "failed" ? "To'lov o'tmadi. Qayta urinib ko'ring yoki boshqa usulni tanlang." : "To'lov yakunlanmadi. Qayta urinib ko'ring yoki boshqa usulni tanlang."); return; }
+      $("#doneTxt").textContent = `Buyurtma №${j.number} to'landi. Operatorimiz tez orada siz bilan bog'lanadi.`;
+    } else $("#doneTxt").textContent = `Buyurtma №${j.number}. Operatorimiz tez orada siz bilan bog'lanadi.`;
     cart = {}; MENU.items.forEach(i => ctl(i.id));
-    $("#doneTxt").textContent = `Buyurtma №${j.number}. Operatorimiz tez orada siz bilan bog'lanadi.`;
     tg.HapticFeedback.notificationOccurred("success");
     show("done"); setTimeout(() => tg.close(), 3500);
   } catch (e) {
-    err("Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib ko'ring.");
+    err(e.message === "pay_off" ? "Bu to'lov usuli hali ulanmagan. Boshqa usulni tanlang." : "Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib ko'ring.");
   } finally { sending = false; tg.MainButton.hideProgress(); update(); }
 }
 </script>
