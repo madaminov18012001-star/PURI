@@ -3,15 +3,39 @@
 //   BOT_TOKEN       @BotFather bergan token (Secret)
 //   ORDERS_CHAT_ID  buyurtmalar tushadigan guruh ID raqami (masalan -1001234567890)
 //   WEBAPP_URL      menyu sahifasi manzili (masalan https://.../bot/)
-//   SETUP_KEY       /setup uchun istalgan maxfiy so'z (Secret)
+//   SETUP_KEY       /setup uchun istalgan maxfiy soʻz (Secret)
 //   SHEET_URL       (ixtiyoriy) Google Sheets bazasi uchun Apps Script manzili
 //   CLICK_TOKEN     @BotFather → Payments → Click ulanganda beriladigan token (Secret)
 //   PAYME_TOKEN     @BotFather → Payments → Payme ulanganda beriladigan token (Secret)
 
+// Filiallar. Manzil ("addr") Timur bergach yoziladi.
 const BRANCHES = {
-  Yunusobod: "Yunusobod filiali",
-  Chimgan: "Chimgan savdo markazi filiali",
+  Yunusobod: { uz: "Yunusobod Gallery savdo markazi", ru: "ТЦ Yunusobod Gallery", addr: { uz: "", ru: "" } },
+  Chimgan: { uz: "Chimgan savdo markazi", ru: "ТЦ Chimgan", addr: { uz: "", ru: "" } },
 };
+const branchLine = (b, l) => b[l] + (b.addr[l] ? ` (${b.addr[l]})` : "");
+
+const TXT = {
+  uz: {
+    welcome: () => `Puriʼga xush kelibsiz! 🇬🇪\n\nXinkali, xachapuri va gruzin taomlari.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "uz")}\n📍 ${branchLine(BRANCHES.Chimgan, "uz")}\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosing, menyudan taom tanlang va buyurtma bering 👇`,
+    open: "🍽 Menyu va buyurtma", menu: "Menyu", other: "Buyurtma berish uchun menyuni oching 👇",
+    accepted: "✅ <b>Buyurtmangiz qabul qilindi!</b>", call: "Operatorimiz tez orada qoʻngʻiroq qiladi.",
+    paid: n => `✅ Toʻlov qabul qilindi! Buyurtma №${n} tayyorlanmoqda. Operatorimiz tez orada qoʻngʻiroq qiladi.`,
+    order: "Buyurtma", total: "Jami", del: "🚗 Yetkazib berish", pick: "🏃 Olib ketish", fee: " (yetkazish narxi alohida)", payw: "Toʻlov",
+    pay: { click: "Click", payme: "Payme", cash: "Naqd yoki karta (qabul qilishda)" }, sum: "soʻm",
+  },
+  ru: {
+    welcome: () => `Добро пожаловать в Puri! 🇬🇪\n\nХинкали, хачапури и блюда грузинской кухни.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "ru")}\n📍 ${branchLine(BRANCHES.Chimgan, "ru")}\n🕙 Ежедневно 10:00–22:00\n\nНажмите кнопку ниже, выберите блюда в меню и оформите заказ 👇`,
+    open: "🍽 Меню и заказ", menu: "Меню", other: "Чтобы сделать заказ, откройте меню 👇",
+    accepted: "✅ <b>Ваш заказ принят!</b>", call: "Наш оператор скоро вам позвонит.",
+    paid: n => `✅ Оплата получена! Заказ №${n} готовится. Наш оператор скоро вам позвонит.`,
+    order: "Заказ", total: "Итого", del: "🚗 Доставка", pick: "🏃 Самовывоз", fee: " (доставка оплачивается отдельно)", payw: "Оплата",
+    pay: { click: "Click", payme: "Payme", cash: "Наличные или карта (при получении)" }, sum: "сум",
+  },
+};
+const langOf = u => (u && u.language_code === "ru" ? "ru" : "uz");
+const appUrl = (env, l) => { const u = new URL(env.WEBAPP_URL); u.searchParams.set("lang", l); return u.toString(); };
+const langRow = [{ text: "🇺🇿 Oʻzbekcha", callback_data: "lang:uz" }, { text: "🇷🇺 Русский", callback_data: "lang:ru" }];
 
 export default {
   async fetch(req, env) {
@@ -43,83 +67,93 @@ async function tg(env, method, body) {
   return j;
 }
 
-const menuButton = env => ({ inline_keyboard: [[{ text: "🍽 Menyu va buyurtma", web_app: { url: env.WEBAPP_URL } }]] });
+const startKb = (env, l) => ({ inline_keyboard: [[{ text: TXT[l].open, web_app: { url: appUrl(env, l) } }], langRow] });
 
 // Bir marta ochiladi: https://<worker>/setup?key=SETUP_KEY
 async function setup(url, env) {
   const hook = `${url.origin}/webhook`;
   const out = {
-    webhook: await tg(env, "setWebhook", { url: hook, secret_token: env.SETUP_KEY, allowed_updates: ["message", "pre_checkout_query"] }),
-    menu: await tg(env, "setChatMenuButton", { menu_button: { type: "web_app", text: "Menyu", web_app: { url: env.WEBAPP_URL } } }),
+    webhook: await tg(env, "setWebhook", { url: hook, secret_token: env.SETUP_KEY, allowed_updates: ["message", "pre_checkout_query", "callback_query"] }),
+    menu: await tg(env, "setChatMenuButton", { menu_button: { type: "web_app", text: "Menyu", web_app: { url: appUrl(env, "uz") } } }),
     commands: await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Boshlash" }, { command: "menu", description: "Menyu" }] }),
+    commands_ru: await tg(env, "setMyCommands", { language_code: "ru", commands: [{ command: "start", description: "Начать" }, { command: "menu", description: "Меню" }] }),
   };
   return json(out);
 }
 
+async function sendStart(env, chat, l) {
+  await tg(env, "setChatMenuButton", { chat_id: chat, menu_button: { type: "web_app", text: TXT[l].menu, web_app: { url: appUrl(env, l) } } });
+  return tg(env, "sendMessage", { chat_id: chat, text: TXT[l].welcome(), reply_markup: startKb(env, l) });
+}
+
 async function onUpdate(u, env) {
   if (u.pre_checkout_query) return tg(env, "answerPreCheckoutQuery", { pre_checkout_query_id: u.pre_checkout_query.id, ok: true });
+  if (u.callback_query) {
+    const cq = u.callback_query, l = cq.data === "lang:ru" ? "ru" : "uz";
+    await tg(env, "answerCallbackQuery", { callback_query_id: cq.id });
+    if (cq.message) await tg(env, "deleteMessage", { chat_id: cq.message.chat.id, message_id: cq.message.message_id });
+    return sendStart(env, cq.from.id, l);
+  }
   const m = u.message;
   if (m && m.successful_payment) return onPaid(m, env);
   if (!m || !m.text) return;
-  const chat = m.chat.id, text = m.text.trim();
+  const chat = m.chat.id, text = m.text.trim(), l = langOf(m.from);
   if (text.startsWith("/id")) return tg(env, "sendMessage", { chat_id: chat, text: `Chat ID: ${chat}` });
   if (m.chat.type !== "private") return;
-  if (text.startsWith("/start") || text.startsWith("/menu") || /menyu/i.test(text)) {
-    return tg(env, "sendMessage", {
-      chat_id: chat, parse_mode: "HTML", reply_markup: menuButton(env),
-      text: "Puri'ga xush kelibsiz! 🇬🇪\n\nXinkali, xachapuri va gruzin taomlari.\n📍 Yunusobod | Chimgan savdo markazi\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosing, menyudan taom tanlang va buyurtma bering 👇",
-    });
-  }
-  return tg(env, "sendMessage", { chat_id: chat, text: "Buyurtma berish uchun menyuni oching 👇", reply_markup: menuButton(env) });
+  if (text.startsWith("/start") || text.startsWith("/menu") || /menyu|меню/i.test(text)) return sendStart(env, chat, l);
+  return tg(env, "sendMessage", { chat_id: chat, text: TXT[l].other, reply_markup: startKb(env, l) });
 }
 
 // ---------- Buyurtma ----------
-const PAY = { click: "Click", payme: "Payme", cash: "Naqd yoki karta (qabul qilishda)" };
+const PAY = TXT.uz.pay;
 
 async function order(req, env) {
   const { initData, order } = await req.json();
   const user = await checkInitData(initData, env.BOT_TOKEN);
   if (!user) return json({ ok: false, error: "auth" }, 401);
+  const L = order.lang === "ru" ? "ru" : "uz";
 
   // Narxlarni menyu faylidan qayta hisoblaymiz (sahifadagi narxga ishonmaymiz)
   const menu = await (await fetch(new URL("menu.json", env.WEBAPP_URL), { cf: { cacheTtl: 300 } })).json();
   const byId = Object.fromEntries(menu.items.map(i => [i.id, i]));
-  const lines = [], plain = []; let total = 0;
+  const picked = [], plain = []; let total = 0;
   for (const { id, qty } of order.items || []) {
     const it = byId[id], q = Math.min(99, Math.max(0, parseInt(qty) || 0));
     if (!it || !q) continue;
     total += it.price * q;
-    lines.push(`• ${esc(it.name)} × ${q} = ${money(it.price * q)}`);
+    picked.push([it, q]);
     plain.push(`${it.name} × ${q}`);
   }
-  if (!lines.length) return json({ ok: false, error: "empty" }, 400);
+  if (!picked.length) return json({ ok: false, error: "empty" }, 400);
 
   const pay = PAY[order.pay] ? order.pay : "cash";
   const providerToken = pay === "click" ? env.CLICK_TOKEN : pay === "payme" ? env.PAYME_TOKEN : "";
   if (pay !== "cash" && !providerToken) return json({ ok: false, error: "pay_off" }, 400);
 
   const delivery = order.type === "delivery";
-  const branch = BRANCHES[order.branch] || BRANCHES.Yunusobod;
+  const br = BRANCHES[order.branch] || BRANCHES.Yunusobod;
   const number = String(Date.now()).slice(-6);
   const who = user.username ? `@${user.username}` : `<a href="tg://user?id=${user.id}">${esc(user.first_name || "mijoz")}</a>`;
-  const msg = [
-    `🧾 <b>Buyurtma №${number}</b>`,
-    `${delivery ? "🚗 Yetkazib berish" : "🏃 Olib ketish"} · ${branch}`,
+  const lines = l => picked.map(([it, q]) => `• ${esc(l === "ru" ? it.ru : it.name)} × ${q} = ${money(it.price * q, l)}`);
+  const mk = l => [
+    `🧾 <b>${TXT[l].order} №${number}</b>`,
+    `${delivery ? TXT[l].del : TXT[l].pick} · ${br[l]}`,
     "",
-    ...lines,
-    `<b>Jami: ${money(total)}</b>${delivery ? " (yetkazish narxi alohida)" : ""}`,
-    `${pay === "cash" ? "💵" : "💳"} To'lov: ${PAY[pay]}`,
+    ...lines(l),
+    `<b>${TXT[l].total}: ${money(total, l)}</b>${delivery ? TXT[l].fee : ""}`,
+    `${pay === "cash" ? "💵" : "💳"} ${TXT[l].payw}: ${TXT[l].pay[pay]}`,
     "",
-    `👤 ${esc(clip(order.name, 60))} (${who})`,
+    `👤 ${esc(clip(order.name, 60))} (${who})${L === "ru" ? " 🇷🇺" : ""}`,
     `📞 ${esc(clip(order.phone, 30))}`,
     delivery ? `📍 ${esc(clip(order.address, 300))}` : "",
     order.note ? `💬 ${esc(clip(order.note, 300))}` : "",
-  ].filter((l, i, a) => l !== "" || a[i - 1] !== "").join("\n").trim();
+  ].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n").trim();
+  const msg = mk("uz");
 
   const row = {
     action: "add", number, date: new Date().toLocaleString("ru-RU", { timeZone: "Asia/Tashkent" }),
-    branch: order.branch === "Chimgan" ? "Chimgan" : "Yunusobod", type: delivery ? "Yetkazib berish" : "Olib ketish",
-    items: plain.join(", "), total, pay: PAY[pay], status: pay === "cash" ? "Yangi" : "To'lov kutilmoqda",
+    branch: br.uz, type: delivery ? "Yetkazib berish" : "Olib ketish",
+    items: plain.join(", "), total, pay: PAY[pay], status: pay === "cash" ? "Yangi" : "Toʻlov kutilmoqda",
     name: clip(order.name, 60), phone: clip(order.phone, 30), address: delivery ? clip(order.address, 300) : "",
     note: clip(order.note, 300), telegram: user.username ? "@" + user.username : String(user.id),
   };
@@ -130,21 +164,21 @@ async function order(req, env) {
     if (!sent.ok) return json({ ok: false, error: "send" }, 502);
     await tg(env, "sendMessage", {
       chat_id: user.id, parse_mode: "HTML",
-      text: `✅ <b>Buyurtmangiz qabul qilindi!</b>\n\n${msg}\n\nOperatorimiz tez orada qo'ng'iroq qiladi.`,
+      text: `${TXT[L].accepted}\n\n${mk(L)}\n\n${TXT[L].call}`,
     });
     return json({ ok: true, number });
   }
 
-  // Onlayn to'lov: buyurtma mijoz chatiga yoziladi, to'lov o'tgach shu xabar guruhga nusxalanadi
-  const draft = await tg(env, "sendMessage", { chat_id: user.id, text: msg, parse_mode: "HTML", disable_web_page_preview: true });
+  // Onlayn toʻlov: buyurtma mijoz chatiga yoziladi, toʻlov oʻtgach shu xabar guruhga nusxalanadi
+  const draft = await tg(env, "sendMessage", { chat_id: user.id, text: mk(L), parse_mode: "HTML", disable_web_page_preview: true });
   if (!draft.ok) return json({ ok: false, error: "send" }, 502);
   const inv = await tg(env, "createInvoiceLink", {
-    title: `Puri buyurtma №${number}`,
-    description: clip(`${lines.length} xil taom, ${branch}.${delivery ? " Yetkazish narxi alohida." : ""}`, 255),
-    payload: `${number}:${draft.result.message_id}:${pay}`,
+    title: `Puri ${TXT[L].order.toLowerCase()} №${number}`,
+    description: clip(`${picked.length} ${L === "ru" ? "поз." : "xil taom"}, ${br[L]}.${delivery ? TXT[L].fee : ""}`, 255),
+    payload: `${number}:${draft.result.message_id}:${pay}:${L}`,
     provider_token: providerToken,
     currency: "UZS",
-    prices: [{ label: `Buyurtma №${number}`, amount: total * 100 }],
+    prices: [{ label: `${TXT[L].order} №${number}`, amount: total * 100 }],
   });
   if (!inv.ok) return json({ ok: false, error: "invoice" }, 502);
   await sheet(env, row);
@@ -153,18 +187,19 @@ async function order(req, env) {
 
 async function onPaid(m, env) {
   const p = m.successful_payment;
-  const [number, msgId, pay] = p.invoice_payload.split(":");
+  const [number, msgId, pay, lp] = p.invoice_payload.split(":");
+  const L = lp === "ru" ? "ru" : "uz";
   const copy = await tg(env, "copyMessage", { chat_id: env.ORDERS_CHAT_ID, from_chat_id: m.chat.id, message_id: Number(msgId) });
   await tg(env, "sendMessage", {
     chat_id: env.ORDERS_CHAT_ID, parse_mode: "HTML",
     reply_parameters: copy.ok ? { message_id: copy.result.message_id } : undefined,
-    text: `🆕✅ <b>№${number} TO'LANDI</b> · ${PAY[pay] || pay} · ${money(p.total_amount / 100)}`,
+    text: `🆕✅ <b>№${number} TOʻLANDI</b> · ${PAY[pay] || pay} · ${money(p.total_amount / 100)}`,
   });
-  await sheet(env, { action: "paid", number, status: `To'landi (${PAY[pay] || pay})` });
-  await tg(env, "sendMessage", { chat_id: m.chat.id, text: `✅ To'lov qabul qilindi! Buyurtma №${number} tayyorlanmoqda. Operatorimiz tez orada qo'ng'iroq qiladi.` });
+  await sheet(env, { action: "paid", number, status: `Toʻlandi (${PAY[pay] || pay})` });
+  await tg(env, "sendMessage", { chat_id: m.chat.id, text: TXT[L].paid(number) });
 }
 
-// Google Sheets bazasiga yozish (SHEET_URL bo'lsa). Xato bo'lsa ham buyurtma to'xtamaydi.
+// Google Sheets bazasiga yozish (SHEET_URL boʻlsa). Xato boʻlsa ham buyurtma toʻxtamaydi.
 async function sheet(env, data) {
   if (!env.SHEET_URL) return;
   try {
@@ -188,7 +223,7 @@ async function checkInitData(initData, token) {
   try { return JSON.parse(p.get("user")); } catch { return null; }
 }
 
-const money = n => n.toLocaleString("ru-RU").replace(/ |,/g, " ") + " so'm";
+const money = (n, l = "uz") => n.toLocaleString("ru-RU").replace(/\u00a0|,/g, " ") + " " + TXT[l].sum;
 const esc = s => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const clip = (s, n) => String(s || "").slice(0, n);
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json" } });

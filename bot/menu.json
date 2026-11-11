@@ -2,59 +2,70 @@
  "cats": [
   {
    "id": "xinkali",
-   "name": "Xinkali"
+   "name": "Xinkali",
+   "name_ru": "Хинкали"
   },
   {
    "id": "xachapuri",
-   "name": "Xachapuri"
+   "name": "Xachapuri",
+   "name_ru": "Хачапури"
   },
   {
    "id": "grill",
-   "name": "Grill va Puri"
+   "name": "Grill va Puri",
+   "name_ru": "Гриль и Puri"
   },
   {
    "id": "issiq",
-   "name": "Issiq taomlar"
+   "name": "Issiq taomlar",
+   "name_ru": "Горячие блюда"
   },
   {
    "id": "shorva",
-   "name": "Sho'rvalar"
+   "name": "Shoʻrvalar",
+   "name_ru": "Супы"
   },
   {
    "id": "salat",
-   "name": "Salat va gazaklar"
+   "name": "Salat va gazaklar",
+   "name_ru": "Салаты и закуски"
   },
   {
    "id": "non",
-   "name": "Non va lamajo"
+   "name": "Non va lamajo",
+   "name_ru": "Хлеб и ламаджо"
   },
   {
    "id": "nonushta",
-   "name": "Nonushta"
+   "name": "Nonushta",
+   "name_ru": "Завтраки"
   },
   {
    "id": "ichimlik",
-   "name": "Ichimliklar"
+   "name": "Ichimliklar",
+   "name_ru": "Напитки"
   }
  ],
  "items": [
   {
    "id": "x1",
    "cat": "xinkali",
-   "name": "Mol go'shtli xinkali",
+   "name": "Mol goʻshtli xinkali",
    "ru": "Хинкали из говядины",
    "price": 14000,
    "note": "1 dona narxi",
-   "img": "img/x1.jpg"
+   "img": "img/x1.jpg",
+   "note_ru": "цена за 1 шт."
   },
   {
    "id": "x2",
    "cat": "xinkali",
-   "name": "Qo'ziqorinli xinkali",
+   "name": "Qoʻziqorinli xinkali",
    "ru": "Хинкали с грибами",
    "price": 17000,
    "note": "1 dona narxi",
-   "img": "img/x2.jpg"
+   "img": "img/x2.jpg",
+   "note_ru": "цена за 1 шт."
   },
   {
    "id": "x3",
@@ -63,7 +74,8 @@
    "ru": "Хинкали с помидором и сыром",
    "price": 14000,
    "note": "1 dona narxi",
-   "img": "img/x3.jpg"
+   "img": "img/x3.jpg",
+   "note_ru": "цена за 1 шт."
   },
   {
    "id": "x4",
@@ -72,7 +84,8 @@
    "ru": "Хинкали с картофелем и сыром",
    "price": 10000,
    "note": "1 dona narxi",
-   "img": "img/x4.jpg"
+   "img": "img/x4.jpg",
+   "note_ru": "цена за 1 шт."
   },
   {
    "id": "h1",
@@ -81,7 +94,8 @@
    "ru": "Хачапури по-аджарски",
    "price": 49000,
    "note": "",
-   "img": "img/h1.jpg"
+   "img": "img/h1.jpg",
+   "note_ru": ""
   },
   {
    "id": "h2",
@@ -90,7 +104,8 @@
    "ru": "Хачапури с помидором",
    "price": 58000,
    "note": "",
-   "img": "img/h2.jpg"
+   "img": "img/h2.jpg",
+   "note_ru": ""
   },
   {
    "id": "h3",
@@ -99,7 +114,8 @@
    "ru": "Хачапури пинована",
    "price": 43000,
    "note": "",
-   "img": "img/h3.jpg"
+   "img": "img/h3.jpg",
+   "note_ru": ""
   },
   {
    "id": "h4",
@@ -108,7 +124,8 @@
    "ru": "Хачапури по-мегрельски",
    "price": 52000,
    "note": "",
-   "img": "img/h4.jpg"
+   "img": "img/h4.jpg",
+   "note_ru": ""
   },
   {
    "id": "h5",
@@ -117,7 +134,8 @@
    "ru": "Хачапури по-имеретински",
    "price": 42000,
    "note": "",
-   "img": "img/h5.jpg"
+   "img": "img/h5.jpg",
+   "note_ru": ""
   },
   {
    "id": "g1",
@@ -126,43 +144,48 @@
    "ru": "Puri из курицы",
    "price": 37000,
    "note": "",
-   "img": "img/g1.jpg"
+   "img": "img/g1.jpg",
+   "note_ru": ""
   },
   {
    "id": "g2",
    "cat": "grill",
-   "name": "Mol go'shtli Puri",
+   "name": "Mol goʻshtli Puri",
    "ru": "Puri из говядины",
    "price": 39000,
    "note": "",
-   "img": "img/g2.jpg"
+   "img": "img/g2.jpg",
+   "note_ru": ""
   },
   {
    "id": "g3",
    "cat": "grill",
-   "name": "Buzoq go'shtidan shashlik",
+   "name": "Buzoq goʻshtidan shashlik",
    "ru": "Шашлык из телятины",
    "price": 20000,
    "note": "1 sixi narxi",
-   "img": "img/g3.jpg"
+   "img": "img/g3.jpg",
+   "note_ru": "цена за 1 шампур"
   },
   {
    "id": "g4",
    "cat": "grill",
-   "name": "Qo'y go'shtidan shashlik",
+   "name": "Qoʻy goʻshtidan shashlik",
    "ru": "Шашлык из баранины",
    "price": 22000,
    "note": "1 sixi narxi",
-   "img": "img/g4.jpg"
+   "img": "img/g4.jpg",
+   "note_ru": "цена за 1 шампур"
   },
   {
    "id": "g5",
    "cat": "grill",
-   "name": "Buzoq go'shtidan shashlik (2-tur)",
+   "name": "Buzoq goʻshtidan shashlik (2-tur)",
    "ru": "Шашлык из телятины",
    "price": 20000,
    "note": "1 sixi narxi",
-   "img": "img/g5.jpg"
+   "img": "img/g5.jpg",
+   "note_ru": "цена за 1 шампур"
   },
   {
    "id": "g6",
@@ -171,7 +194,8 @@
    "ru": "Шашлык куриный",
    "price": 14000,
    "note": "1 sixi narxi",
-   "img": "img/g6.jpg"
+   "img": "img/g6.jpg",
+   "note_ru": "цена за 1 шампур"
   },
   {
    "id": "g7",
@@ -180,7 +204,8 @@
    "ru": "Шашлык ассорти",
    "price": 135000,
    "note": "",
-   "img": "img/g7.jpg"
+   "img": "img/g7.jpg",
+   "note_ru": ""
   },
   {
    "id": "g8",
@@ -189,16 +214,18 @@
    "ru": "Колбаски барбекю",
    "price": 78000,
    "note": "",
-   "img": "img/g8.jpg"
+   "img": "img/g8.jpg",
+   "note_ru": ""
   },
   {
    "id": "g9",
    "cat": "grill",
-   "name": "Mol go'shtli vrap",
+   "name": "Mol goʻshtli vrap",
    "ru": "Врап из говядины",
    "price": 39000,
    "note": "",
-   "img": "img/g9.jpg"
+   "img": "img/g9.jpg",
+   "note_ru": ""
   },
   {
    "id": "g10",
@@ -207,7 +234,8 @@
    "ru": "Врап из курицы",
    "price": 37000,
    "note": "",
-   "img": "img/g10.jpg"
+   "img": "img/g10.jpg",
+   "note_ru": ""
   },
   {
    "id": "g11",
@@ -216,7 +244,8 @@
    "ru": "Картофель фри",
    "price": 25000,
    "note": "",
-   "img": "img/g11.jpg"
+   "img": "img/g11.jpg",
+   "note_ru": ""
   },
   {
    "id": "i1",
@@ -225,16 +254,18 @@
    "ru": "Картофель по-домашнему",
    "price": 63000,
    "note": "",
-   "img": "img/i1.jpg"
+   "img": "img/i1.jpg",
+   "note_ru": ""
   },
   {
    "id": "i2",
    "cat": "issiq",
-   "name": "Buzoq go'shti teriyaki",
+   "name": "Buzoq goʻshti teriyaki",
    "ru": "Телятина терияки",
    "price": 68000,
    "note": "",
-   "img": "img/i2.jpg"
+   "img": "img/i2.jpg",
+   "note_ru": ""
   },
   {
    "id": "i3",
@@ -243,25 +274,28 @@
    "ru": "Жаренная печёнка",
    "price": 53000,
    "note": "",
-   "img": "img/i3.jpg"
+   "img": "img/i3.jpg",
+   "note_ru": ""
   },
   {
    "id": "i4",
    "cat": "issiq",
-   "name": "Shefdan dimlangan go'sht",
+   "name": "Shefdan dimlangan goʻsht",
    "ru": "Тушёное мясо от шефа",
    "price": 125000,
    "note": "2 kishilik",
-   "img": "img/i4.jpg"
+   "img": "img/i4.jpg",
+   "note_ru": "на 2 персоны"
   },
   {
    "id": "i5",
    "cat": "issiq",
-   "name": "Qaymoqli qo'ziqorin sousida tovuq, guruch bilan",
+   "name": "Qaymoqli qoʻziqorin sousida tovuq, guruch bilan",
    "ru": "Курица в сливочно-грибном соусе с рисом",
    "price": 53000,
    "note": "",
-   "img": "img/i5.jpg"
+   "img": "img/i5.jpg",
+   "note_ru": ""
   },
   {
    "id": "i6",
@@ -270,7 +304,8 @@
    "ru": "Курица терияки",
    "price": 53000,
    "note": "",
-   "img": "img/i6.jpg"
+   "img": "img/i6.jpg",
+   "note_ru": ""
   },
   {
    "id": "i7",
@@ -279,7 +314,8 @@
    "ru": "Котлета по-домашнему",
    "price": 48000,
    "note": "",
-   "img": "img/i7.jpg"
+   "img": "img/i7.jpg",
+   "note_ru": ""
   },
   {
    "id": "i8",
@@ -288,25 +324,28 @@
    "ru": "Форель с картофелем по-деревенски",
    "price": 98000,
    "note": "",
-   "img": "img/i8.jpg"
+   "img": "img/i8.jpg",
+   "note_ru": ""
   },
   {
    "id": "s1",
    "cat": "shorva",
-   "name": "Xarcho sho'rva",
+   "name": "Xarcho shoʻrva",
    "ru": "Суп харчо",
    "price": 38000,
    "note": "",
-   "img": "img/s1.jpg"
+   "img": "img/s1.jpg",
+   "note_ru": ""
   },
   {
    "id": "s2",
    "cat": "shorva",
-   "name": "Frikadelkali sho'rva",
+   "name": "Frikadelkali shoʻrva",
    "ru": "Суп с фрикадельками",
    "price": 28000,
    "note": "",
-   "img": "img/s2.jpg"
+   "img": "img/s2.jpg",
+   "note_ru": ""
   },
   {
    "id": "a1",
@@ -315,7 +354,8 @@
    "ru": "Рулетики из баклажан с сыром",
    "price": 33000,
    "note": "",
-   "img": "img/a1.jpg"
+   "img": "img/a1.jpg",
+   "note_ru": ""
   },
   {
    "id": "a2",
@@ -324,7 +364,8 @@
    "ru": "Салат грузинский",
    "price": 38000,
    "note": "",
-   "img": "img/a2.jpg"
+   "img": "img/a2.jpg",
+   "note_ru": ""
   },
   {
    "id": "a3",
@@ -333,7 +374,8 @@
    "ru": "Хоровац",
    "price": 32000,
    "note": "",
-   "img": "img/a3.jpg"
+   "img": "img/a3.jpg",
+   "note_ru": ""
   },
   {
    "id": "a4",
@@ -342,7 +384,8 @@
    "ru": "Салат с тунцом",
    "price": 65000,
    "note": "",
-   "img": "img/a4.jpg"
+   "img": "img/a4.jpg",
+   "note_ru": ""
   },
   {
    "id": "a5",
@@ -351,7 +394,8 @@
    "ru": "Хрустящие баклажаны",
    "price": 68000,
    "note": "",
-   "img": "img/a5.jpg"
+   "img": "img/a5.jpg",
+   "note_ru": ""
   },
   {
    "id": "a6",
@@ -360,7 +404,8 @@
    "ru": "Цезарь с курицей",
    "price": 53000,
    "note": "",
-   "img": "img/a6.jpg"
+   "img": "img/a6.jpg",
+   "note_ru": ""
   },
   {
    "id": "a7",
@@ -369,7 +414,8 @@
    "ru": "Фруктовый салат",
    "price": 58000,
    "note": "",
-   "img": "img/a7.jpg"
+   "img": "img/a7.jpg",
+   "note_ru": ""
   },
   {
    "id": "n1",
@@ -378,7 +424,8 @@
    "ru": "Лаваш по-грузински",
    "price": 49000,
    "note": "",
-   "img": "img/n1.jpg"
+   "img": "img/n1.jpg",
+   "note_ru": ""
   },
   {
    "id": "n2",
@@ -387,7 +434,8 @@
    "ru": "Шоти",
    "price": 10000,
    "note": "",
-   "img": "img/n2.jpg"
+   "img": "img/n2.jpg",
+   "note_ru": ""
   },
   {
    "id": "n3",
@@ -396,7 +444,8 @@
    "ru": "Ламаджо с сыром",
    "price": 59000,
    "note": "",
-   "img": "img/n3.jpg"
+   "img": "img/n3.jpg",
+   "note_ru": ""
   },
   {
    "id": "b1",
@@ -405,7 +454,8 @@
    "ru": "Омлет с микс-салатом",
    "price": 33000,
    "note": "",
-   "img": "img/b1.jpg"
+   "img": "img/b1.jpg",
+   "note_ru": ""
   },
   {
    "id": "b2",
@@ -414,7 +464,8 @@
    "ru": "Завтрак по-грузински",
    "price": 58000,
    "note": "",
-   "img": "img/b2.jpg"
+   "img": "img/b2.jpg",
+   "note_ru": ""
   },
   {
    "id": "b3",
@@ -423,7 +474,8 @@
    "ru": "Чирбули по-аджарски (шакшука)",
    "price": 33000,
    "note": "",
-   "img": "img/b3.jpg"
+   "img": "img/b3.jpg",
+   "note_ru": ""
   },
   {
    "id": "b4",
@@ -432,7 +484,8 @@
    "ru": "Омлет с колбасой",
    "price": 39000,
    "note": "",
-   "img": "img/b4.jpg"
+   "img": "img/b4.jpg",
+   "note_ru": ""
   },
   {
    "id": "d1",
@@ -441,7 +494,8 @@
    "ru": "Лимонад ягодный 0.4",
    "price": 28000,
    "note": "",
-   "img": "img/d1.jpg"
+   "img": "img/d1.jpg",
+   "note_ru": ""
   },
   {
    "id": "d2",
@@ -450,7 +504,8 @@
    "ru": "Лимонад мохито 0.4",
    "price": 28000,
    "note": "",
-   "img": "img/d1.jpg"
+   "img": "img/d1.jpg",
+   "note_ru": ""
   },
   {
    "id": "d3",
@@ -459,7 +514,8 @@
    "ru": "Лимонад манго-маракуйя 0.4",
    "price": 28000,
    "note": "",
-   "img": "img/d1.jpg"
+   "img": "img/d1.jpg",
+   "note_ru": ""
   },
   {
    "id": "d4",
@@ -468,7 +524,8 @@
    "ru": "Лимонад ягодный 2л",
    "price": 59000,
    "note": "",
-   "img": "img/d4.jpg"
+   "img": "img/d4.jpg",
+   "note_ru": ""
   },
   {
    "id": "d5",
@@ -477,7 +534,8 @@
    "ru": "Лимонад мохито 2л",
    "price": 59000,
    "note": "",
-   "img": "img/d4.jpg"
+   "img": "img/d4.jpg",
+   "note_ru": ""
   },
   {
    "id": "d6",
@@ -486,7 +544,8 @@
    "ru": "Лимонад манго-маракуйя 2л",
    "price": 59000,
    "note": "",
-   "img": "img/d4.jpg"
+   "img": "img/d4.jpg",
+   "note_ru": ""
   },
   {
    "id": "d7",
@@ -495,7 +554,8 @@
    "ru": "Чай чёрный с лимоном",
    "price": 25000,
    "note": "",
-   "img": "img/d7.jpg"
+   "img": "img/d7.jpg",
+   "note_ru": ""
   },
   {
    "id": "d8",
@@ -504,7 +564,8 @@
    "ru": "Чай малиновый",
    "price": 35000,
    "note": "",
-   "img": "img/d7.jpg"
+   "img": "img/d7.jpg",
+   "note_ru": ""
   },
   {
    "id": "d9",
@@ -513,7 +574,8 @@
    "ru": "Чай ягодный",
    "price": 35000,
    "note": "",
-   "img": "img/d7.jpg"
+   "img": "img/d7.jpg",
+   "note_ru": ""
   },
   {
    "id": "d10",
@@ -522,7 +584,8 @@
    "ru": "Чай зелёный",
    "price": 15000,
    "note": "",
-   "img": "img/d7.jpg"
+   "img": "img/d7.jpg",
+   "note_ru": ""
   },
   {
    "id": "d11",
@@ -531,7 +594,8 @@
    "ru": "Чай чёрный",
    "price": 15000,
    "note": "",
-   "img": "img/d7.jpg"
+   "img": "img/d7.jpg",
+   "note_ru": ""
   }
  ]
 }

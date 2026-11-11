@@ -10,7 +10,10 @@
 :root{--red:#7a1010;--red2:#5c0b0b;--cream:#f7ecdc;--card:#fffaf2;--ink:#2a1a14;--muted:#7d6a5e;--line:#ead9c2;--gold:#f2c94c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-header{background:var(--red);color:#fff;padding:18px 16px 14px;text-align:center}
+header{position:relative;background:var(--red);color:#fff;padding:18px 16px 14px;text-align:center}
+.lang{position:absolute;right:12px;top:12px;display:flex;border:1px solid rgba(255,255,255,.5);border-radius:8px;overflow:hidden}
+.lang button{border:0;background:transparent;color:#fff;font-size:12px;font-weight:600;padding:5px 8px}
+.lang button.on{background:var(--cream);color:var(--red)}
 .logo{font:600 34px/1 Georgia,"Times New Roman",serif;letter-spacing:6px}
 .sub{font-size:11px;letter-spacing:3px;opacity:.85;margin-top:6px}
 nav{position:sticky;top:0;-webkit-overflow-scrolling:touch;z-index:5;background:var(--red2);display:flex;gap:8px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
@@ -59,47 +62,47 @@ textarea{min-height:64px;resize:vertical}
 </head>
 <body>
 <div id="menu">
-  <header><div class="logo">PURI</div><div class="sub">KHINKALI · KHACHAPURI</div></header>
+  <header><div class="lang" id="lang"><button data-l="uz">UZ</button><button data-l="ru">RU</button></div><div class="logo">PURI</div><div class="sub">KHINKALI · KHACHAPURI</div></header>
   <nav id="cats"></nav>
   <main id="list"></main>
 </div>
 
 <div id="cart">
-  <div class="top"><button onclick="show('menu')">← Menyu</button><h1>Savat</h1></div>
+  <div class="top"><button onclick="show('menu')" data-t="back">← Menyu</button><h1 data-t="cart">Savat</h1></div>
   <div id="rows"></div>
-  <div class="sum"><span>Jami</span><span id="total"></span></div>
+  <div class="sum"><span data-t="total">Jami</span><span id="total"></span></div>
 
-  <fieldset><label>Qanday olasiz?</label>
+  <fieldset><label data-t="how">Qanday olasiz?</label>
     <div class="seg" id="type">
-      <button data-v="delivery" class="on">Yetkazib berish</button>
-      <button data-v="pickup">Olib ketaman</button>
+      <button data-v="delivery" class="on" data-t="delivery">Yetkazib berish</button>
+      <button data-v="pickup" data-t="pickup">Olib ketaman</button>
     </div>
   </fieldset>
-  <fieldset><label>Filial</label>
+  <fieldset><label data-t="branch">Filial</label>
     <div class="seg" id="branch">
-      <button data-v="Yunusobod" class="on">Yunusobod</button>
-      <button data-v="Chimgan">Chimgan SM</button>
+      <button data-v="Yunusobod" class="on" data-t="b_yun">Yunusobod Gallery</button>
+      <button data-v="Chimgan" data-t="b_chim">Chimgan SM</button>
     </div>
   </fieldset>
-  <fieldset><label>To'lov usuli</label>
+  <fieldset><label data-t="pay">Toʻlov usuli</label>
     <div class="seg" id="pay">
       <button data-v="click" class="on">Click</button>
       <button data-v="payme">Payme</button>
-      <button data-v="cash">Naqd / karta</button>
+      <button data-v="cash" data-t="cash">Naqd / karta</button>
     </div>
-    <div class="hint" id="payHint">Buyurtma berish tugmasini bosganingizda to'lov oynasi ochiladi.</div></fieldset>
-  <fieldset><label for="name">Ismingiz</label><input id="name" autocomplete="name"></fieldset>
-  <fieldset><label for="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
-  <fieldset id="addrBox"><label for="addr">Manzil</label><textarea id="addr" placeholder="Ko'cha, uy, xonadon, mo'ljal"></textarea>
-    <div class="hint">Yetkazish narxi va vaqtini operator qo'ng'iroq qilib aytadi.</div></fieldset>
-  <fieldset><label for="note">Izoh (ixtiyoriy)</label><textarea id="note" placeholder="Masalan: achchiq bo'lmasin"></textarea></fieldset>
+    <div class="hint" id="payHint"></div></fieldset>
+  <fieldset><label for="name" data-t="name">Ismingiz</label><input id="name" autocomplete="name"></fieldset>
+  <fieldset><label for="phone" data-t="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
+  <fieldset id="addrBox"><label for="addr" data-t="addr">Manzil</label><textarea id="addr" data-ph="addr_ph"></textarea>
+    <div class="hint" data-t="addr_hint"></div></fieldset>
+  <fieldset><label for="note" data-t="note">Izoh (ixtiyoriy)</label><textarea id="note" data-ph="note_ph"></textarea></fieldset>
   <div class="err" id="err"></div>
 </div>
 
 <div id="done">
   <div class="ok">✅</div>
-  <h1>Buyurtma qabul qilindi!</h1>
-  <p id="doneTxt">Operatorimiz tez orada siz bilan bog'lanadi.</p>
+  <h1 data-t="done">Buyurtma qabul qilindi!</h1>
+  <p id="doneTxt"></p>
 </div>
 
 <div id="bar"><button id="barBtn"></button></div>
@@ -108,8 +111,54 @@ textarea{min-height:64px;resize:vertical}
 const tg = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null;
 const API = (window.PURI_CONFIG || {}).api || "";
 let MENU = {cats: [], items: []}, cart = {}, view = "menu", sending = false;
+let heads = [], curId = "", ticking = false, scrollBound = false;
 const $ = s => document.querySelector(s);
-const fmt = n => n.toLocaleString("ru-RU").replace(/ |,/g, " ") + " so'm";
+const T = {
+  uz: {back:"← Menyu", cart:"Savat", total:"Jami", how:"Qanday olasiz?", delivery:"Yetkazib berish", pickup:"Olib ketaman",
+    branch:"Filial", b_yun:"Yunusobod Gallery", b_chim:"Chimgan SM", pay:"Toʻlov usuli", cash:"Naqd / karta",
+    pay_online:"Buyurtma berish tugmasini bosganingizda toʻlov oynasi ochiladi.", pay_cash:"Pulni buyurtmani qabul qilganda toʻlaysiz.",
+    name:"Ismingiz", phone:"Telefon raqam", addr:"Manzil", addr_ph:"Koʻcha, uy, xonadon, moʻljal",
+    addr_hint:"Yetkazish narxi va vaqtini operator qoʻngʻiroq qilib aytadi.", note:"Izoh (ixtiyoriy)", note_ph:"Masalan: achchiq boʻlmasin",
+    done:"Buyurtma qabul qilindi!", done_txt:"Operatorimiz tez orada siz bilan bogʻlanadi.", add:"Qoʻshish", sum:"soʻm", pcs:"ta",
+    bar_cart:"Savat", bar_order:"Buyurtma berish", sending:"Yuborilmoqda...",
+    e_name:"Ismingizni yozing.", e_phone:"Telefon raqamni toʻliq yozing.", e_addr:"Yetkazish manzilini yozing.",
+    e_test:"Bu sinov rejimi: buyurtma faqat Telegram ichida yuboriladi.", e_paid:n=>`Buyurtma №${n} toʻlandi. Operatorimiz tez orada siz bilan bogʻlanadi.`,
+    e_ok:n=>`Buyurtma №${n}. Operatorimiz tez orada siz bilan bogʻlanadi.`, e_payfail:"Toʻlov oʻtmadi. Qayta urinib koʻring yoki boshqa usulni tanlang.",
+    e_paycancel:"Toʻlov yakunlanmadi. Qayta urinib koʻring yoki boshqa usulni tanlang.", e_payoff:"Bu toʻlov usuli hali ulanmagan. Boshqa usulni tanlang.",
+    e_net:"Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib koʻring."},
+  ru: {back:"← Меню", cart:"Корзина", total:"Итого", how:"Как получить заказ?", delivery:"Доставка", pickup:"Самовывоз",
+    branch:"Филиал", b_yun:"Yunusobod Gallery", b_chim:"ТЦ Chimgan", pay:"Способ оплаты", cash:"Наличные / карта",
+    pay_online:"После нажатия «Оформить заказ» откроется окно оплаты.", pay_cash:"Оплата при получении заказа.",
+    name:"Ваше имя", phone:"Номер телефона", addr:"Адрес", addr_ph:"Улица, дом, квартира, ориентир",
+    addr_hint:"Стоимость и время доставки сообщит оператор по телефону.", note:"Комментарий (необязательно)", note_ph:"Например: не острое",
+    done:"Заказ принят!", done_txt:"Наш оператор скоро свяжется с вами.", add:"Добавить", sum:"сум", pcs:"шт.",
+    bar_cart:"Корзина", bar_order:"Оформить заказ", sending:"Отправляем...",
+    e_name:"Укажите ваше имя.", e_phone:"Укажите номер телефона полностью.", e_addr:"Укажите адрес доставки.",
+    e_test:"Тестовый режим: заказ отправляется только внутри Telegram.", e_paid:n=>`Заказ №${n} оплачен. Наш оператор скоро свяжется с вами.`,
+    e_ok:n=>`Заказ №${n}. Наш оператор скоро свяжется с вами.`, e_payfail:"Оплата не прошла. Попробуйте ещё раз или выберите другой способ.",
+    e_paycancel:"Оплата не завершена. Попробуйте ещё раз или выберите другой способ.", e_payoff:"Этот способ оплаты пока не подключён. Выберите другой.",
+    e_net:"Заказ не отправлен. Проверьте интернет и попробуйте снова."},
+};
+const q = new URLSearchParams(location.search).get("lang");
+let LANG = q === "ru" || q === "uz" ? q : null;
+try { LANG = LANG || localStorage.getItem("puri_lang"); } catch (e) {}
+if (LANG !== "ru" && LANG !== "uz") {
+  const lc = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user && Telegram.WebApp.initDataUnsafe.user.language_code;
+  LANG = lc === "ru" ? "ru" : "uz";
+}
+const t = k => T[LANG][k];
+const nm = i => LANG === "ru" ? i.ru : i.name;
+const nt = i => LANG === "ru" ? i.note_ru : i.note;
+const cn = c => LANG === "ru" ? c.name_ru : c.name;
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = t(e.dataset.t));
+  document.querySelectorAll("[data-ph]").forEach(e => e.placeholder = t(e.dataset.ph));
+  document.querySelectorAll("#lang button").forEach(b => b.classList.toggle("on", b.dataset.l === LANG));
+  $("#payHint").textContent = t(document.querySelector("#pay .on").dataset.v === "cash" ? "pay_cash" : "pay_online");
+}
+
+const fmt = n => n.toLocaleString("ru-RU").replace(/\u00a0|,/g, " ") + " " + t("sum");
 const byId = id => MENU.items.find(i => i.id === id);
 
 if (tg) {
@@ -125,20 +174,27 @@ if (tg) {
 }
 $("#barBtn").onclick = onMain;
 
-fetch("menu.json?v=3").then(r => r.json()).then(m => { MENU = m; render(); });
+applyLang();
+$("#lang").onclick = e => {
+  const l = e.target.dataset.l; if (!l || l === LANG) return;
+  LANG = l; try { localStorage.setItem("puri_lang", l); } catch (er) {}
+  applyLang(); render();
+  if (view === "cart") rows();
+};
+fetch("menu.json?v=4").then(r => r.json()).then(m => { MENU = m; render(); });
 
 function render() {
-  $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${c.name}</button>`).join("");
+  $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${cn(c)}</button>`).join("");
   $("#cats").onclick = e => { const c = e.target.dataset.c; if (c) document.getElementById("c-" + c).scrollIntoView({behavior: "smooth"}); };
-  $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${c.name}</h2><div class="grid">` +
+  $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${cn(c)}</h2><div class="grid">` +
     MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" decoding="async" width="480" height="360" src="${i.img}" alt="">
-      <div class="b"><div class="n">${i.name}</div>${i.note ? `<div class="note">${i.note}</div>` : ""}
+      <div class="b"><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}
       <div class="p">${fmt(i.price)}</div><div id="ctl-${i.id}"></div></div></div>`).join("") + "</div>").join("");
   MENU.items.forEach(i => ctl(i.id));
-  const heads = [...document.querySelectorAll("h2")];
-  // Scroll paytida faqat kategoriya o'zgarganda tugmani yangilaymiz (iPhone'da qotmasligi uchun)
-  let curId = "", ticking = false;
-  const nav = $("#cats");
+  heads = [...document.querySelectorAll("h2")]; curId = "";
+  // Scroll paytida faqat kategoriya almashganda tugmani yangilaymiz (iPhoneʼda qotmasligi uchun)
+  if (scrollBound) { update(); return; }
+  scrollBound = true;
   addEventListener("scroll", () => {
     if (ticking || view !== "menu") return;
     ticking = true;
@@ -148,6 +204,7 @@ function render() {
       for (const h of heads) { if (h.getBoundingClientRect().top < 120) cur = h; else break; }
       if (cur.id === curId) return;
       curId = cur.id;
+      const nav = $("#cats");
       nav.querySelectorAll("button").forEach(b => {
         const on = "c-" + b.dataset.c === curId; b.classList.toggle("on", on);
         if (on) nav.scrollLeft = b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2;
@@ -161,7 +218,7 @@ function ctl(id) {
   const q = cart[id] || 0, el = document.getElementById("ctl-" + id);
   if (!el) return;
   el.innerHTML = q ? `<div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div>`
-    : `<button class="add" onclick="chg('${id}',1)">Qo'shish</button>`;
+    : `<button class="add" onclick="chg('${id}',1)">${t("add")}</button>`;
 }
 
 function chg(id, d) {
@@ -177,8 +234,8 @@ const total = () => Object.entries(cart).reduce((s, [id, q]) => s + byId(id).pri
 function update() {
   const n = count();
   let text = "", visible = false;
-  if (view === "menu" && n) { text = `Savat · ${n} ta · ${fmt(total())}`; visible = true; }
-  if (view === "cart") { text = sending ? "Yuborilmoqda..." : `Buyurtma berish · ${fmt(total())}`; visible = true; }
+  if (view === "menu" && n) { text = `${t("bar_cart")} · ${n} ${t("pcs")} · ${fmt(total())}`; visible = true; }
+  if (view === "cart") { text = sending ? t("sending") : `${t("bar_order")} · ${fmt(total())}`; visible = true; }
   if (tg) {
     visible ? tg.MainButton.setText(text).show() : tg.MainButton.hide();
     $("#bar").style.display = "none";
@@ -187,7 +244,7 @@ function update() {
 
 function rows() {
   $("#rows").innerHTML = Object.entries(cart).map(([id, q]) => { const i = byId(id);
-    return `<div class="row"><img src="${i.img}" alt=""><div class="t"><b>${i.name}</b>${fmt(i.price * q)}</div>
+    return `<div class="row"><img src="${i.img}" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
     <div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div></div>`; }).join("");
   $("#total").textContent = fmt(total());
 }
@@ -205,7 +262,7 @@ function show(v) {
 document.querySelectorAll(".seg").forEach(s => s.onclick = e => {
   if (!e.target.dataset.v) return;
   s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b === e.target));
-  if (s.id === "pay") $("#payHint").textContent = e.target.dataset.v === "cash" ? "Pulni buyurtmani qabul qilganda to'laysiz." : "Buyurtma berish tugmasini bosganingizda to'lov oynasi ochiladi.";
+  if (s.id === "pay") $("#payHint").textContent = t(e.target.dataset.v === "cash" ? "pay_cash" : "pay_online");
   if (s.id === "type") $("#addrBox").style.display = e.target.dataset.v === "delivery" ? "block" : "none";
 });
 const seg = id => document.querySelector(`#${id} .on`).dataset.v;
@@ -217,15 +274,15 @@ async function onMain() {
   if (view !== "cart" || sending) return;
   const order = {
     items: Object.entries(cart).map(([id, qty]) => ({id, qty})),
-    type: seg("type"), branch: seg("branch"), pay: seg("pay"),
+    type: seg("type"), branch: seg("branch"), pay: seg("pay"), lang: LANG,
     name: $("#name").value.trim(), phone: $("#phone").value.trim(),
     address: $("#addr").value.trim(), note: $("#note").value.trim(),
   };
-  if (!order.name) return err("Ismingizni yozing.");
-  if (order.phone.replace(/\D/g, "").length < 9) return err("Telefon raqamni to'liq yozing.");
-  if (order.type === "delivery" && order.address.length < 5) return err("Yetkazish manzilini yozing.");
+  if (!order.name) return err(t("e_name"));
+  if (order.phone.replace(/\D/g, "").length < 9) return err(t("e_phone"));
+  if (order.type === "delivery" && order.address.length < 5) return err(t("e_addr"));
   err("");
-  if (!tg || !API) { $("#doneTxt").textContent = "Bu sinov rejimi: buyurtma faqat Telegram ichida yuboriladi."; return show("done"); }
+  if (!tg || !API) { $("#doneTxt").textContent = t("e_test"); return show("done"); }
   sending = true; update(); tg.MainButton.showProgress();
   try {
     const r = await fetch(API + "/order", {method: "POST", headers: {"Content-Type": "application/json"},
@@ -234,14 +291,14 @@ async function onMain() {
     if (!j.ok) throw new Error(j.error || "xato");
     if (j.invoice) {
       const status = await new Promise(res => tg.openInvoice(j.invoice, res));
-      if (status !== "paid") { err(status === "failed" ? "To'lov o'tmadi. Qayta urinib ko'ring yoki boshqa usulni tanlang." : "To'lov yakunlanmadi. Qayta urinib ko'ring yoki boshqa usulni tanlang."); return; }
-      $("#doneTxt").textContent = `Buyurtma №${j.number} to'landi. Operatorimiz tez orada siz bilan bog'lanadi.`;
-    } else $("#doneTxt").textContent = `Buyurtma №${j.number}. Operatorimiz tez orada siz bilan bog'lanadi.`;
+      if (status !== "paid") { err(t(status === "failed" ? "e_payfail" : "e_paycancel")); return; }
+      $("#doneTxt").textContent = t("e_paid")(j.number);
+    } else $("#doneTxt").textContent = t("e_ok")(j.number);
     cart = {}; MENU.items.forEach(i => ctl(i.id));
     tg.HapticFeedback.notificationOccurred("success");
     show("done"); setTimeout(() => tg.close(), 3500);
   } catch (e) {
-    err(e.message === "pay_off" ? "Bu to'lov usuli hali ulanmagan. Boshqa usulni tanlang." : "Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib ko'ring.");
+    err(t(e.message === "pay_off" ? "e_payoff" : "e_net"));
   } finally { sending = false; tg.MainButton.hideProgress(); update(); }
 }
 </script>
