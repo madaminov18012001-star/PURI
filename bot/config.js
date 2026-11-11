@@ -1,1 +1,1 @@
-window.PURI_CONFIG = { api: "" }; // bot server manzili shu yerga yoziladi
+window.PURI_CONFIG = { api: "https://puribot.madaminov18012001.workers.dev" };
