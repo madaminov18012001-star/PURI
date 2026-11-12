@@ -9,7 +9,7 @@
 <style>
 :root{--red:#9b3c38;--red2:#7a2a27;--bg:#f6f3ef;--card:#fff;--ink:#1d1512;--muted:#8a7f78;--line:#ebe5df;--soft:#f8eceb}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+html,body{margin:0;overflow-x:hidden;max-width:100%;background:var(--bg);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 button{font-family:inherit;cursor:pointer}
 .view{display:none;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 .view.on{display:block}
@@ -35,10 +35,10 @@ main{padding:0 12px}
 h2{font-size:20px;margin:20px 4px 12px}
 
 /* Taom kartalari */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px}
-.it{content-visibility:auto;contain-intrinsic-size:auto 260px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px}
+.it{min-width:0;content-visibility:auto;contain-intrinsic-size:auto 260px}
 .ph{position:relative;border-radius:16px;overflow:hidden;background:var(--red)}
-.ph img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;display:block}
+.ph img{width:100%;max-width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;display:block}
 .fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:#b9aea7;padding:0}
 .fav.on{color:var(--red)}
 .ctl{position:absolute;right:8px;bottom:8px}
