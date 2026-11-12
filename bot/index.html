@@ -309,7 +309,7 @@ fetch("menu.json?v=7").then(r => r.json()).then(m => {
 
 // ---------- Menyu ----------
 function card(i) {
-  return `<div class="it"><div class="ph"><img loading="lazy" decoding="async" width="450" height="450" src="${i.img}?v=5" alt="">
+  return `<div class="it"><div class="ph"><img loading="lazy" decoding="async" width="450" height="450" src="${i.img}?v=6" alt="">
     <button class="fav${favs.includes(i.id) ? " on" : ""}" data-fav="${i.id}" aria-label="♥">${HEART}</button>
     <div class="ctl" data-ctl="${i.id}">${ctlHtml(i.id)}</div></div>
     <div class="p">${fmt(i.price)}</div><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}</div>`;
@@ -416,7 +416,7 @@ function cartView() {
   $("#cartBody").style.display = has ? "block" : "none";
   if (!has) return;
   $("#rows").innerHTML = Object.entries(cart).map(([id, q]) => { const i = byId(id);
-    return `<div class="row"><img src="${i.img}?v=5" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
+    return `<div class="row"><img src="${i.img}?v=6" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
     <div class="qty"><button data-d="-1" data-id="${id}">−</button><span>${q}</span><button data-d="1" data-id="${id}">+</button></div></div>`; }).join("");
   $("#total").textContent = fmt(total());
 }
