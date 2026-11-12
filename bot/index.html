@@ -2,146 +2,261 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Puri menyu</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="config.js?v=3"></script>
 <style>
-:root{--red:#7a1010;--red2:#5c0b0b;--cream:#f7ecdc;--card:#fffaf2;--ink:#2a1a14;--muted:#7d6a5e;--line:#ead9c2;--gold:#f2c94c}
+:root{--red:#9b3c38;--red2:#7a2a27;--bg:#f6f3ef;--card:#fff;--ink:#1d1512;--muted:#8a7f78;--line:#ebe5df;--soft:#f8eceb}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-header{position:relative;background:var(--red);color:#fff;padding:18px 16px 14px;text-align:center}
-.lang{position:absolute;right:12px;top:12px;display:flex;border:1px solid rgba(255,255,255,.5);border-radius:8px;overflow:hidden}
-.lang button{border:0;background:transparent;color:#fff;font-size:12px;font-weight:600;padding:5px 8px}
-.lang button.on{background:var(--cream);color:var(--red)}
-.logo{font:600 34px/1 Georgia,"Times New Roman",serif;letter-spacing:6px}
-.sub{font-size:11px;letter-spacing:3px;opacity:.85;margin-top:6px}
-nav{position:sticky;top:0;-webkit-overflow-scrolling:touch;z-index:5;background:var(--red2);display:flex;gap:8px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button{font-family:inherit;cursor:pointer}
+.view{display:none;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.view.on{display:block}
+
+/* Yuqori qism */
+.hdr{background:#fff;padding:12px 14px 10px;display:flex;align-items:center;gap:12px}
+.hdr img{width:100px;height:auto;flex:none}
+.hdr .t{flex:1;min-width:0}
+.hdr .t b{display:block;font-size:17px}
+.hdr .t span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.lang{display:flex;background:var(--bg);border-radius:10px;padding:3px;flex:none}
+.lang button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:700;padding:6px 9px;border-radius:8px}
+.lang button.on{background:#fff;color:var(--red);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.srch{background:#fff;padding:0 14px 10px}
+.srch label{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:0 12px}
+.srch svg{flex:none;color:var(--muted)}
+.srch input{border:0;background:transparent;padding:11px 0;font-size:16px;width:100%;outline:none;color:var(--ink)}
+nav{position:sticky;top:0;z-index:5;background:#fff;display:flex;gap:8px;overflow-x:auto;padding:8px 14px 10px;scrollbar-width:none;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
 nav::-webkit-scrollbar{display:none}
-nav button{flex:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:18px;padding:7px 14px;font-size:14px}
-nav button.on{background:var(--cream);color:var(--red);border-color:var(--cream);font-weight:600}
-main{padding:4px 12px 110px}
-h2{color:var(--red);font-size:19px;margin:20px 4px 10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.it{content-visibility:auto;contain-intrinsic-size:auto 360px;background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
-.it img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--red);display:block}
-.it .b{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
-.it .n{font-weight:600;font-size:14px;flex:1}
-.it .note{font-size:12px;color:var(--muted);margin-top:2px}
-.it .p{font-weight:700;margin:6px 0 8px}
-.add{border:0;background:var(--red);color:#fff;border-radius:10px;padding:9px;font-size:14px;font-weight:600;width:100%}
-.qty{display:flex;align-items:center;justify-content:space-between;background:var(--red);border-radius:10px;color:#fff}
-.qty button{border:0;background:transparent;color:#fff;font-size:20px;width:40px;height:36px}
-.qty span{font-weight:700}
-#bar{position:fixed;left:12px;right:12px;bottom:12px;z-index:9;display:none}
-#bar button{width:100%;border:0;border-radius:14px;background:var(--red);color:#fff;padding:15px;font-size:16px;font-weight:700;box-shadow:0 4px 14px rgba(90,10,10,.35)}
-#cart{display:none;padding:12px 12px 120px}
-.top{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
-.top button{border:0;background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--red);font-weight:600}
-.top h1{font-size:20px;margin:0;color:var(--red)}
-.row{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:12px;padding:8px;margin-bottom:8px}
-.row img{width:56px;height:56px;border-radius:10px;object-fit:cover}
+nav button{flex:none;border:0;background:var(--bg);color:var(--ink);border-radius:20px;padding:8px 15px;font-size:14px;font-weight:500}
+nav button.on{background:var(--red);color:#fff;font-weight:600}
+main{padding:0 12px}
+h2{font-size:20px;margin:20px 4px 12px}
+
+/* Taom kartalari */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px}
+.it{content-visibility:auto;contain-intrinsic-size:auto 330px}
+.ph{position:relative;border-radius:16px;overflow:hidden;background:var(--red)}
+.ph img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:#b9aea7;padding:0}
+.fav.on{color:var(--red)}
+.ctl{position:absolute;right:8px;bottom:8px}
+.plus{width:38px;height:38px;border:0;border-radius:50%;background:#fff;color:var(--red);font-size:26px;line-height:1;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.2);padding:0}
+.qty{display:flex;align-items:center;background:#fff;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.2);color:var(--red)}
+.qty button{border:0;background:transparent;color:var(--red);font-size:22px;width:36px;height:38px;padding:0}
+.qty span{font-weight:700;min-width:16px;text-align:center}
+.it .p{font-weight:800;font-size:16px;margin:8px 2px 2px}
+.it .n{font-size:14px;margin:0 2px}
+.it .note{font-size:12px;color:var(--muted);margin:2px 2px 0}
+
+/* Sahifalar */
+.top{position:sticky;top:0;z-index:5;background:#fff;padding:14px 16px;border-bottom:1px solid var(--line)}
+.top h1{font-size:20px;margin:0}
+.pad{padding:12px}
+.box{background:#fff;border-radius:16px;padding:12px;margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center;padding:8px 0}
+.row+.row{border-top:1px solid var(--line)}
+.row img{width:60px;height:60px;border-radius:12px;object-fit:cover;flex:none}
 .row .t{flex:1;font-size:14px}
-.row .t b{display:block}
-.row .qty{width:110px}
-.row .qty button{width:34px;height:32px}
-.sum{display:flex;justify-content:space-between;font-size:17px;font-weight:700;margin:14px 4px}
+.row .t b{display:block;font-weight:600}
+.row .qty{box-shadow:none;background:var(--bg)}
+.sum{display:flex;justify-content:space-between;font-size:17px;font-weight:800;padding:4px 2px}
 fieldset{border:0;margin:0 0 12px;padding:0}
-label{display:block;font-size:13px;color:var(--muted);margin:0 4px 5px}
-input,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px;font-size:16px;color:var(--ink);font-family:inherit}
+label.l{display:block;font-size:13px;color:var(--muted);margin:0 2px 6px}
+input,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px;font-size:16px;color:var(--ink);font-family:inherit}
 textarea{min-height:64px;resize:vertical}
-.seg{display:flex;gap:8px}
-.seg button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 6px;font-size:14px;color:var(--ink)}
-.seg button.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
-.hint{font-size:12px;color:var(--muted);margin:6px 4px 0}
-.err{color:#b00020;font-size:13px;margin:4px;display:none}
-#done{display:none;text-align:center;padding:60px 24px}
-#done .ok{font-size:54px}
-#done h1{color:var(--red)}
+.seg{display:flex;gap:6px;background:var(--bg);border-radius:12px;padding:4px}
+.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:10px 4px;font-size:14px;color:var(--ink)}
+.seg button.on{background:#fff;color:var(--red);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.hint{font-size:12px;color:var(--muted);margin:6px 2px 0}
+.err{color:#b00020;font-size:14px;margin:4px 2px 10px;display:none}
+.big{display:block;width:100%;border:0;border-radius:14px;background:var(--red);color:#fff;padding:15px;font-size:16px;font-weight:700}
+.big:disabled{opacity:.6}
+.big.ghost{background:var(--soft);color:var(--red)}
+.empty{text-align:center;padding:60px 24px;color:var(--muted)}
+.empty .e{font-size:52px;margin-bottom:10px}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:16px}
+.empty .big{max-width:260px;margin:0 auto}
+
+/* Buyurtmalar */
+.ord .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ord .h b{font-size:16px}
+.badge{font-size:12px;font-weight:700;border-radius:8px;padding:4px 8px;background:var(--soft);color:var(--red)}
+.ord .m{font-size:13px;color:var(--muted);margin-bottom:8px}
+.ord ul{margin:0 0 10px;padding:0;list-style:none;font-size:14px}
+.ord li{padding:2px 0}
+.ord .big{padding:11px;font-size:14px}
+
+/* Profil */
+.menuList{background:#fff;border-radius:16px;overflow:hidden}
+.menuList button,.menuList a{display:flex;align-items:center;gap:12px;width:100%;border:0;background:#fff;padding:15px 14px;font-size:15px;color:var(--ink);text-align:left;text-decoration:none}
+.menuList > * + *{border-top:1px solid var(--line)}
+.menuList .ic{width:34px;height:34px;border-radius:10px;background:var(--soft);color:var(--red);display:grid;place-items:center;font-size:17px;flex:none}
+.menuList .tx{flex:1}
+.menuList .ar{color:#c9c0ba;font-size:20px}
+#langNow{font-size:14px;color:var(--muted)}
+.brand{text-align:center;padding:18px 0 22px}
+.brand img{width:200px;height:auto}
+.brand div{color:var(--muted);font-size:13px;margin-top:8px}
+.info p{margin:0 0 10px;font-size:15px}
+.info p:last-child{margin:0}
+.info h3{margin:0 0 6px;font-size:16px}
+.call{display:inline-block;margin-top:8px;background:var(--soft);color:var(--red);border-radius:10px;padding:9px 14px;font-weight:700;text-decoration:none}
+
+/* Pastki menyu */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;border:0;background:transparent;color:#a39992;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:4px 0;position:relative}
+.tabs button.on{color:var(--red)}
+.tabs .cnt{position:absolute;top:0;left:50%;margin-left:6px;background:var(--red);color:#fff;border-radius:10px;font-size:11px;min-width:18px;height:18px;line-height:18px;padding:0 5px;display:none}
+.tabs button.on .cnt{background:var(--red)}
+.go{position:fixed;left:12px;right:12px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:15;display:none}
+.go .big{box-shadow:0 4px 14px rgba(90,10,10,.3)}
+#cartBody{padding-bottom:70px}
+#done .empty .e{font-size:60px}
 </style>
 </head>
 <body>
-<div id="menu">
-  <header><div class="lang" id="lang"><button data-l="uz">UZ</button><button data-l="ru">RU</button></div><div class="logo">PURI</div><div class="sub">KHINKALI · KHACHAPURI</div></header>
+
+<!-- Boş sahifa -->
+<section class="view on" id="v-home">
+  <div class="hdr"><img src="img/logo-wide.png" alt="Puri" width="100" height="40">
+    <div class="t"><span data-t="hours"></span></div>
+    <div class="lang" id="lang"><button data-l="uz">UZ</button><button data-l="ru">RU</button></div></div>
+  <div class="srch"><label><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" data-ph="search" autocomplete="off"></label></div>
   <nav id="cats"></nav>
   <main id="list"></main>
-</div>
+</section>
 
-<div id="cart">
-  <div class="top"><button onclick="show('menu')" data-t="back">← Menyu</button><h1 data-t="cart">Savat</h1></div>
-  <div id="rows"></div>
-  <div class="sum"><span data-t="total">Jami</span><span id="total"></span></div>
-
-  <fieldset><label data-t="how">Qanday olasiz?</label>
-    <div class="seg" id="type">
-      <button data-v="delivery" class="on" data-t="delivery">Yetkazib beriş</button>
-      <button data-v="pickup" data-t="pickup">Olib ketaman</button>
+<!-- Savat -->
+<section class="view" id="v-cart">
+  <div class="top"><h1 data-t="cart"></h1></div>
+  <div id="cartEmpty" class="empty"><div class="e">🛒</div><b data-t="empty_cart"></b><button class="big" onclick="go('home')" data-t="to_menu"></button></div>
+  <div id="cartBody" class="pad">
+    <div class="box"><div id="rows"></div></div>
+    <div class="box">
+      <fieldset><label class="l" data-t="how"></label>
+        <div class="seg" id="type"><button data-v="delivery" class="on" data-t="delivery"></button><button data-v="pickup" data-t="pickup"></button></div></fieldset>
+      <fieldset><label class="l" data-t="branch"></label>
+        <div class="seg" id="branch"><button data-v="Yunusobod" class="on" data-t="b_yun"></button><button data-v="Chimgan" data-t="b_chim"></button></div></fieldset>
+      <fieldset style="margin:0"><label class="l" data-t="pay"></label>
+        <div class="seg" id="pay"><button data-v="click" class="on">Click</button><button data-v="payme">Payme</button><button data-v="cash" data-t="cash"></button></div>
+        <div class="hint" id="payHint"></div></fieldset>
     </div>
-  </fieldset>
-  <fieldset><label data-t="branch">Filial</label>
-    <div class="seg" id="branch">
-      <button data-v="Yunusobod" class="on" data-t="b_yun">Yunusobod Gallery</button>
-      <button data-v="Chimgan" data-t="b_chim">Çimgan SM</button>
+    <div class="box">
+      <fieldset><label class="l" for="name" data-t="name"></label><input id="name" autocomplete="name"></fieldset>
+      <fieldset><label class="l" for="phone" data-t="phone"></label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
+      <fieldset id="addrBox"><label class="l" for="addr" data-t="addr"></label><textarea id="addr" data-ph="addr_ph"></textarea><div class="hint" data-t="addr_hint"></div></fieldset>
+      <fieldset style="margin:0"><label class="l" for="note" data-t="note"></label><textarea id="note" data-ph="note_ph"></textarea></fieldset>
     </div>
-  </fieldset>
-  <fieldset><label data-t="pay">Tõlov usuli</label>
-    <div class="seg" id="pay">
-      <button data-v="click" class="on">Click</button>
-      <button data-v="payme">Payme</button>
-      <button data-v="cash" data-t="cash">Naqd / karta</button>
+    <div class="box"><div class="sum"><span data-t="total"></span><span id="total"></span></div></div>
+    <div class="err" id="err"></div>
+  </div>
+</section>
+
+<!-- Buyurtmalar -->
+<section class="view" id="v-orders">
+  <div class="top"><h1 data-t="orders"></h1></div>
+  <div class="pad" id="ordList"></div>
+</section>
+
+<!-- Profil -->
+<section class="view" id="v-prof">
+  <div class="top"><h1 data-t="prof"></h1></div>
+  <div class="pad">
+    <div class="brand"><img src="img/logo-wide.png" alt="Puri"><div data-t="tagline"></div></div>
+    <div class="menuList">
+      <button onclick="go('fav')"><span class="ic">♥</span><span class="tx" data-t="fav"></span><span class="ar">›</span></button>
+      <button onclick="go('branches')"><span class="ic">📍</span><span class="tx" data-t="branches"></span><span class="ar">›</span></button>
+      <button onclick="go('contacts')"><span class="ic">📞</span><span class="tx" data-t="contacts"></span><span class="ar">›</span></button>
+      <button onclick="go('delpay')"><span class="ic">🚗</span><span class="tx" data-t="delpay"></span><span class="ar">›</span></button>
+      <button onclick="go('about')"><span class="ic">ℹ️</span><span class="tx" data-t="about"></span><span class="ar">›</span></button>
+      <button onclick="toggleLang()"><span class="ic">🌐</span><span class="tx" data-t="lang"></span><span class="ar" id="langNow"></span></button>
     </div>
-    <div class="hint" id="payHint"></div></fieldset>
-  <fieldset><label for="name" data-t="name">Ismiñiz</label><input id="name" autocomplete="name"></fieldset>
-  <fieldset><label for="phone" data-t="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
-  <fieldset id="addrBox"><label for="addr" data-t="addr">Manzil</label><textarea id="addr" data-ph="addr_ph"></textarea>
-    <div class="hint" data-t="addr_hint"></div></fieldset>
-  <fieldset><label for="note" data-t="note">Izoh (ixtiyoriy)</label><textarea id="note" data-ph="note_ph"></textarea></fieldset>
-  <div class="err" id="err"></div>
-</div>
+  </div>
+</section>
 
-<div id="done">
-  <div class="ok">✅</div>
-  <h1 data-t="done">Buyurtma qabul qilindi!</h1>
-  <p id="doneTxt"></p>
-</div>
+<!-- Profil ichki sahifalari -->
+<section class="view" id="v-fav"><div class="top"><h1 data-t="fav"></h1></div><div class="pad" id="favList"></div></section>
+<section class="view" id="v-branches"><div class="top"><h1 data-t="branches"></h1></div><div class="pad" id="brList"></div></section>
+<section class="view" id="v-contacts"><div class="top"><h1 data-t="contacts"></h1></div><div class="pad" id="ctList"></div></section>
+<section class="view" id="v-delpay"><div class="top"><h1 data-t="delpay"></h1></div><div class="pad">
+  <div class="box info"><h3 data-t="delivery"></h3><p data-t="addr_hint"></p><h3 data-t="pickup"></h3><p data-t="pick_txt"></p></div>
+  <div class="box info"><h3 data-t="pay"></h3><p data-t="pay_txt"></p></div></div></section>
+<section class="view" id="v-about"><div class="top"><h1 data-t="about"></h1></div><div class="pad">
+  <div class="brand"><img src="img/logo-wide.png" alt="Puri"></div>
+  <div class="box info"><p data-t="about_txt"></p><p data-t="hours"></p></div></div></section>
 
-<div id="bar"><button id="barBtn"></button></div>
+<section class="view" id="v-done"><div class="empty"><div class="e">✅</div><b data-t="done"></b><p id="doneTxt"></p>
+  <button class="big" onclick="go('orders')" data-t="my_orders"></button></div></section>
+
+<div class="go" id="go"><button class="big" id="goBtn"></button></div>
+
+<div class="tabs" id="tabs">
+  <button data-v="home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="t_home"></span></button>
+  <button data-v="cart"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span data-t="cart"></span><i class="cnt" id="cnt"></i></button>
+  <button data-v="orders"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span data-t="orders"></span></button>
+  <button data-v="prof"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-t="prof"></span></button>
+</div>
 
 <script>
 const tg = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null;
 const API = (window.PURI_CONFIG || {}).api || "";
-let MENU = {cats: [], items: []}, cart = {}, view = "menu", sending = false;
-let heads = [], curId = "", ticking = false, scrollBound = false;
+const BR = {
+  Yunusobod: {uz: "Yunusobod Gallery savdo markazi", ru: "ТЦ Yunusobod Gallery", phone: "+998 99 899 69 88"},
+  Chimgan: {uz: "Çimgan savdo markazi", ru: "ТЦ Chimgan", phone: "+998 99 437 95 29"},
+};
+let MENU = {cats: [], items: []}, cart = {}, view = "home", sending = false, query = "";
+let heads = [], curId = "", ticking = false;
 const $ = s => document.querySelector(s);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+let favs = store.get("puri_fav", []), orders = store.get("puri_orders", []);
+cart = store.get("puri_cart", {});
+
 const T = {
-  uz: {back:"← Menyu", cart:"Savat", total:"Jami", how:"Qanday olasiz?", delivery:"Yetkazib beriş", pickup:"Olib ketaman",
+  uz: {t_home:"Boş sahifa", cart:"Savat", orders:"Buyurtmalar", prof:"Profil", search:"Taom qidiriş",
+    hours:"🕙 Har kuni 10:00–22:00", total:"Jami", how:"Qanday olasiz?", delivery:"Yetkazib beriş", pickup:"Olib ketaman",
     branch:"Filial", b_yun:"Yunusobod Gallery", b_chim:"Çimgan SM", pay:"Tõlov usuli", cash:"Naqd / karta",
     pay_online:"Buyurtma beriş tugmasini bosganiñizda tõlov oynasi oçiladi.", pay_cash:"Pulni buyurtmani qabul qilganda tõlaysiz.",
     name:"Ismiñiz", phone:"Telefon raqam", addr:"Manzil", addr_ph:"Kõça, uy, xonadon, mõljal",
     addr_hint:"Yetkaziş narxi va vaqtini operator qõnğiroq qilib aytadi.", note:"Izoh (ixtiyoriy)", note_ph:"Masalan: aççiq bõlmasin",
-    done:"Buyurtma qabul qilindi!", done_txt:"Operatorimiz tez orada siz bilan boğlanadi.", add:"Qõşiş", sum:"sõm", pcs:"ta",
-    bar_cart:"Savat", bar_order:"Buyurtma beriş", sending:"Yuborilmoqda...",
+    done:"Buyurtma qabul qilindi!", sum:"sõm", pcs:"ta", order_btn:"Buyurtma beriş", sending:"Yuborilmoqda...",
+    go_cart:"Savatga õtiş", empty_cart:"Savat hozirça bõş", to_menu:"Menyuga õtiş", nothing:"Heç narsa topilmadi",
+    empty_orders:"Hali buyurtma yõq", my_orders:"Buyurtmalarim", repeat:"Qayta buyurtma", st_new:"Qabul qilindi", st_paid:"Tõlandi",
+    fav:"Sevimlilar", empty_fav:"Yoqqan taomlarni ♥ bilan belgilañ", branches:"Filiallar", contacts:"Kontaktlar",
+    delpay:"Yetkaziş va tõlov", about:"Biz haqimizda", lang:"Til", call:"Qõnğiroq qiliş",
+    tagline:"Xinkali, xaçapuri va gruzin taomlari", about_txt:"Puri — xinkali, xaçapuri va gruzin taomlari.",
+    pick_txt:"Buyurtmani tanlagan filialiñizdan olib ketasiz.", pay_txt:"Click, Payme yoki naqd / karta orqali tõlaş mumkin.",
     e_name:"Ismiñizni yoziñ.", e_phone:"Telefon raqamni tõliq yoziñ.", e_addr:"Yetkaziş manzilini yoziñ.",
     e_test:"Bu sinov rejimi: buyurtma faqat Telegram içida yuboriladi.", e_paid:n=>`Buyurtma №${n} tõlandi. Operatorimiz tez orada siz bilan boğlanadi.`,
     e_ok:n=>`Buyurtma №${n}. Operatorimiz tez orada siz bilan boğlanadi.`, e_payfail:"Tõlov õtmadi. Qayta urinib kõriñ yoki boşqa usulni tanlañ.",
     e_paycancel:"Tõlov yakunlanmadi. Qayta urinib kõriñ yoki boşqa usulni tanlañ.", e_payoff:"Bu tõlov usuli hali ulanmagan. Boşqa usulni tanlañ.",
     e_net:"Buyurtma yuborilmadi. Internetni tekşirib, qayta urinib kõriñ."},
-  ru: {back:"← Меню", cart:"Корзина", total:"Итого", how:"Как получить заказ?", delivery:"Доставка", pickup:"Самовывоз",
+  ru: {t_home:"Главная", cart:"Корзина", orders:"Заказы", prof:"Профиль", search:"Поиск блюд",
+    hours:"🕙 Ежедневно 10:00–22:00", total:"Итого", how:"Как получить заказ?", delivery:"Доставка", pickup:"Самовывоз",
     branch:"Филиал", b_yun:"Yunusobod Gallery", b_chim:"ТЦ Chimgan", pay:"Способ оплаты", cash:"Наличные / карта",
     pay_online:"После нажатия «Оформить заказ» откроется окно оплаты.", pay_cash:"Оплата при получении заказа.",
     name:"Ваше имя", phone:"Номер телефона", addr:"Адрес", addr_ph:"Улица, дом, квартира, ориентир",
     addr_hint:"Стоимость и время доставки сообщит оператор по телефону.", note:"Комментарий (необязательно)", note_ph:"Например: не острое",
-    done:"Заказ принят!", done_txt:"Наш оператор скоро свяжется с вами.", add:"Добавить", sum:"сум", pcs:"шт.",
-    bar_cart:"Корзина", bar_order:"Оформить заказ", sending:"Отправляем...",
+    done:"Заказ принят!", sum:"сум", pcs:"шт.", order_btn:"Оформить заказ", sending:"Отправляем...",
+    go_cart:"Перейти в корзину", empty_cart:"Корзина пока пуста", to_menu:"Перейти в меню", nothing:"Ничего не найдено",
+    empty_orders:"Заказов пока нет", my_orders:"Мои заказы", repeat:"Повторить заказ", st_new:"Принят", st_paid:"Оплачен",
+    fav:"Избранное", empty_fav:"Отмечайте понравившиеся блюда ♥", branches:"Филиалы", contacts:"Контакты",
+    delpay:"Доставка и оплата", about:"О нас", lang:"Язык", call:"Позвонить",
+    tagline:"Хинкали, хачапури и блюда грузинской кухни", about_txt:"Puri — хинкали, хачапури и блюда грузинской кухни.",
+    pick_txt:"Заберите заказ в выбранном филиале.", pay_txt:"Оплата через Click, Payme или наличными / картой.",
     e_name:"Укажите ваше имя.", e_phone:"Укажите номер телефона полностью.", e_addr:"Укажите адрес доставки.",
     e_test:"Тестовый режим: заказ отправляется только внутри Telegram.", e_paid:n=>`Заказ №${n} оплачен. Наш оператор скоро свяжется с вами.`,
     e_ok:n=>`Заказ №${n}. Наш оператор скоро свяжется с вами.`, e_payfail:"Оплата не прошла. Попробуйте ещё раз или выберите другой способ.",
     e_paycancel:"Оплата не завершена. Попробуйте ещё раз или выберите другой способ.", e_payoff:"Этот способ оплаты пока не подключён. Выберите другой.",
     e_net:"Заказ не отправлен. Проверьте интернет и попробуйте снова."},
 };
-const q = new URLSearchParams(location.search).get("lang");
-let LANG = q === "ru" || q === "uz" ? q : null;
-try { LANG = LANG || localStorage.getItem("puri_lang"); } catch (e) {}
+const q0 = new URLSearchParams(location.search).get("lang");
+let LANG = q0 === "ru" || q0 === "uz" ? q0 : store.get("puri_lang", null);
 if (LANG !== "ru" && LANG !== "uz") {
   const lc = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user && Telegram.WebApp.initDataUnsafe.user.language_code;
   LANG = lc === "ru" ? "ru" : "uz";
@@ -150,128 +265,210 @@ const t = k => T[LANG][k];
 const nm = i => LANG === "ru" ? i.ru : i.name;
 const nt = i => LANG === "ru" ? i.note_ru : i.note;
 const cn = c => LANG === "ru" ? c.name_ru : c.name;
+const fmt = n => n.toLocaleString("ru-RU").replace(/ |,/g, " ") + " " + t("sum");
+const byId = id => MENU.items.find(i => i.id === id);
+const HEART = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.5 1.1 4.3 2.4.8-1.3 2.2-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>';
+
 function applyLang() {
   document.documentElement.lang = LANG;
   document.querySelectorAll("[data-t]").forEach(e => e.textContent = t(e.dataset.t));
   document.querySelectorAll("[data-ph]").forEach(e => e.placeholder = t(e.dataset.ph));
   document.querySelectorAll("#lang button").forEach(b => b.classList.toggle("on", b.dataset.l === LANG));
-  $("#payHint").textContent = t(document.querySelector("#pay .on").dataset.v === "cash" ? "pay_cash" : "pay_online");
+  $("#langNow").textContent = LANG === "ru" ? "Русский" : "Õzbekça";
+  $("#payHint").textContent = t(seg("pay") === "cash" ? "pay_cash" : "pay_online");
 }
-
-const fmt = n => n.toLocaleString("ru-RU").replace(/\u00a0|,/g, " ") + " " + t("sum");
-const byId = id => MENU.items.find(i => i.id === id);
+function setLang(l) {
+  if (l === LANG) return;
+  LANG = l; store.set("puri_lang", l);
+  applyLang(); render(); refresh();
+}
+const toggleLang = () => setLang(LANG === "uz" ? "ru" : "uz");
 
 if (tg) {
   tg.ready(); tg.expand();
   try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
-  try { tg.setHeaderColor("#7a1010"); tg.setBackgroundColor("#f7ecdc"); } catch (e) {}
-  try { tg.setBottomBarColor && tg.setBottomBarColor("#f7ecdc"); } catch (e) {}
-  tg.BackButton.onClick(() => show("menu"));
-  tg.MainButton.setParams({color: "#7a1010", text_color: "#ffffff"});
-  tg.MainButton.onClick(onMain);
+  try { tg.setHeaderColor("#ffffff"); tg.setBackgroundColor("#f6f3ef"); } catch (e) {}
+  try { tg.setBottomBarColor && tg.setBottomBarColor("#ffffff"); } catch (e) {}
+  tg.BackButton.onClick(back);
   const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
   if (u) $("#name").value = [u.first_name, u.last_name].filter(Boolean).join(" ");
 }
-$("#barBtn").onclick = onMain;
+const saved = store.get("puri_contact", null);
+if (saved) { if (saved.name) $("#name").value = saved.name; $("#phone").value = saved.phone || ""; $("#addr").value = saved.address || ""; }
 
+$("#lang").onclick = e => { const l = e.target.dataset.l; if (l) setLang(l); };
+$("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) go(b.dataset.v); };
+$("#goBtn").onclick = () => view === "cart" ? submit() : go("cart");
+$("#q").oninput = e => { query = e.target.value.trim().toLowerCase(); render(); };
 applyLang();
-$("#lang").onclick = e => {
-  const l = e.target.dataset.l; if (!l || l === LANG) return;
-  LANG = l; try { localStorage.setItem("puri_lang", l); } catch (er) {}
-  applyLang(); render();
-  if (view === "cart") rows();
-};
-fetch("menu.json?v=6").then(r => r.json()).then(m => { MENU = m; render(); });
+fetch("menu.json?v=7").then(r => r.json()).then(m => {
+  MENU = m;
+  for (const id in cart) if (!byId(id)) delete cart[id];
+  render(); refresh();
+});
+
+// ---------- Menyu ----------
+function card(i) {
+  return `<div class="it"><div class="ph"><img loading="lazy" decoding="async" width="450" height="600" src="${i.img}?v=5" alt="">
+    <button class="fav${favs.includes(i.id) ? " on" : ""}" data-fav="${i.id}" aria-label="♥">${HEART}</button>
+    <div class="ctl" data-ctl="${i.id}">${ctlHtml(i.id)}</div></div>
+    <div class="p">${fmt(i.price)}</div><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}</div>`;
+}
+const ctlHtml = id => cart[id]
+  ? `<div class="qty"><button data-d="-1" data-id="${id}">−</button><span>${cart[id]}</span><button data-d="1" data-id="${id}">+</button></div>`
+  : `<button class="plus" data-d="1" data-id="${id}" aria-label="+">+</button>`;
 
 function render() {
-  $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${cn(c)}</button>`).join("");
-  $("#cats").onclick = e => { const c = e.target.dataset.c; if (c) document.getElementById("c-" + c).scrollIntoView({behavior: "smooth"}); };
+  const nav = $("#cats");
+  if (query) {
+    const hits = MENU.items.filter(i => (i.name + " " + i.ru).toLowerCase().includes(query));
+    nav.style.display = "none";
+    $("#list").innerHTML = hits.length ? `<h2>${t("search")}</h2><div class="grid">${hits.map(card).join("")}</div>`
+      : `<div class="empty"><div class="e">🔍</div><b>${t("nothing")}</b></div>`;
+    heads = []; return;
+  }
+  nav.style.display = "";
+  nav.innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${cn(c)}</button>`).join("");
   $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${cn(c)}</h2><div class="grid">` +
-    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" decoding="async" width="450" height="600" src="${i.img}?v=5" alt="">
-      <div class="b"><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}
-      <div class="p">${fmt(i.price)}</div><div id="ctl-${i.id}"></div></div></div>`).join("") + "</div>").join("");
-  MENU.items.forEach(i => ctl(i.id));
-  heads = [...document.querySelectorAll("h2")]; curId = "";
-  // Scroll paytida faqat kategoriya almashganda tugmani yangilaymiz (iPhoneʼda qotmasligi uchun)
-  if (scrollBound) { update(); return; }
-  scrollBound = true;
-  addEventListener("scroll", () => {
-    if (ticking || view !== "menu") return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false;
-      let cur = heads[0];
-      for (const h of heads) { if (h.getBoundingClientRect().top < 120) cur = h; else break; }
-      if (cur.id === curId) return;
-      curId = cur.id;
-      const nav = $("#cats");
-      nav.querySelectorAll("button").forEach(b => {
-        const on = "c-" + b.dataset.c === curId; b.classList.toggle("on", on);
-        if (on) nav.scrollLeft = b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2;
-      });
+    MENU.items.filter(i => i.cat === c.id).map(card).join("") + "</div>").join("");
+  heads = [...document.querySelectorAll("#list h2")]; curId = "";
+}
+$("#cats").onclick = e => {
+  const c = e.target.dataset.c; if (!c) return;
+  const h = document.getElementById("c-" + c);
+  scrollTo({top: h.getBoundingClientRect().top + scrollY - $("#cats").offsetHeight - 6, behavior: "smooth"});
+};
+// Scroll paytida faqat kategoriya almashganda tugmani yangilaymiz (iPhoneʼda qotmasligi uchun)
+addEventListener("scroll", () => {
+  if (ticking || view !== "home" || !heads.length) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    ticking = false;
+    let cur = heads[0];
+    for (const h of heads) { if (h.getBoundingClientRect().top < 120) cur = h; else break; }
+    if (cur.id === curId) return;
+    curId = cur.id;
+    const nav = $("#cats");
+    nav.querySelectorAll("button").forEach(b => {
+      const on = "c-" + b.dataset.c === curId; b.classList.toggle("on", on);
+      if (on) nav.scrollLeft = b.offsetLeft - (nav.clientWidth - b.offsetWidth) / 2;
     });
-  }, {passive: true});
-  update();
-}
+  });
+}, {passive: true});
 
-function ctl(id) {
-  const q = cart[id] || 0, el = document.getElementById("ctl-" + id);
-  if (!el) return;
-  el.innerHTML = q ? `<div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div>`
-    : `<button class="add" onclick="chg('${id}',1)">${t("add")}</button>`;
-}
+// Bitta umumiy bosiş işlovçisi: +/−, ♥
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.id) chg(b.dataset.id, +b.dataset.d);
+  else if (b.dataset.fav) toggleFav(b.dataset.fav, b);
+});
 
 function chg(id, d) {
   cart[id] = Math.max(0, (cart[id] || 0) + d);
   if (!cart[id]) delete cart[id];
+  store.set("puri_cart", cart);
   if (tg) tg.HapticFeedback.selectionChanged();
-  ctl(id); update();
-  if (view === "cart") { if (!count()) show("menu"); else rows(); }
+  document.querySelectorAll(`[data-ctl="${id}"]`).forEach(el => el.innerHTML = ctlHtml(id));
+  if (view === "cart") cartView();
+  refresh();
+}
+function toggleFav(id, btn) {
+  favs = favs.includes(id) ? favs.filter(x => x !== id) : [...favs, id];
+  store.set("puri_fav", favs);
+  if (tg) tg.HapticFeedback.impactOccurred("light");
+  document.querySelectorAll(`[data-fav="${id}"]`).forEach(b => b.classList.toggle("on", favs.includes(id)));
+  if (view === "fav") favView();
 }
 const count = () => Object.values(cart).reduce((a, b) => a + b, 0);
 const total = () => Object.entries(cart).reduce((s, [id, q]) => s + byId(id).price * q, 0);
 
-function update() {
-  const n = count();
-  let text = "", visible = false;
-  if (view === "menu" && n) { text = `${t("bar_cart")} · ${n} ${t("pcs")} · ${fmt(total())}`; visible = true; }
-  if (view === "cart") { text = sending ? t("sending") : `${t("bar_order")} · ${fmt(total())}`; visible = true; }
-  if (tg) {
-    visible ? tg.MainButton.setText(text).show() : tg.MainButton.hide();
-    $("#bar").style.display = "none";
-  } else { $("#bar").style.display = visible ? "block" : "none"; $("#barBtn").textContent = text; }
+// Savat soni va pastdagi tugma
+function refresh() {
+  const n = MENU.items.length ? count() : 0;
+  $("#cnt").textContent = n; $("#cnt").style.display = n ? "block" : "none";
+  let text = "";
+  if (view === "home" && n) text = `${t("go_cart")} · ${fmt(total())}`;
+  if (view === "cart" && n) text = sending ? t("sending") : `${t("order_btn")} · ${fmt(total())}`;
+  $("#go").style.display = text ? "block" : "none";
+  $("#goBtn").textContent = text; $("#goBtn").disabled = sending;
 }
 
-function rows() {
+// ---------- Sahifalar ----------
+const TABS = ["home", "cart", "orders", "prof"];
+const PARENT = {fav: "prof", branches: "prof", contacts: "prof", delpay: "prof", about: "prof", done: "home"};
+function go(v) {
+  view = v;
+  document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-" + v));
+  const tab = TABS.includes(v) ? v : PARENT[v] === "prof" ? "prof" : v === "done" ? "orders" : "";
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === tab));
+  if (v === "cart") cartView();
+  if (v === "orders") ordersView();
+  if (v === "fav") favView();
+  if (v === "branches" || v === "contacts") infoView(v);
+  if (tg) PARENT[v] ? tg.BackButton.show() : tg.BackButton.hide();
+  err(""); scrollTo(0, 0); refresh();
+}
+function back() { go(PARENT[view] || "home"); }
+
+function cartView() {
+  const has = count() > 0;
+  $("#cartEmpty").style.display = has ? "none" : "block";
+  $("#cartBody").style.display = has ? "block" : "none";
+  if (!has) return;
   $("#rows").innerHTML = Object.entries(cart).map(([id, q]) => { const i = byId(id);
     return `<div class="row"><img src="${i.img}?v=5" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
-    <div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div></div>`; }).join("");
+    <div class="qty"><button data-d="-1" data-id="${id}">−</button><span>${q}</span><button data-d="1" data-id="${id}">+</button></div></div>`; }).join("");
   $("#total").textContent = fmt(total());
 }
 
-function show(v) {
-  view = v;
-  $("#menu").style.display = v === "menu" ? "block" : "none";
-  $("#cart").style.display = v === "cart" ? "block" : "none";
-  $("#done").style.display = v === "done" ? "block" : "none";
-  if (v === "cart") rows();
-  if (tg) v === "cart" ? tg.BackButton.show() : tg.BackButton.hide();
-  scrollTo(0, 0); update();
+function favView() {
+  const list = favs.map(byId).filter(Boolean);
+  $("#favList").innerHTML = list.length ? `<div class="grid">${list.map(card).join("")}</div>`
+    : `<div class="empty"><div class="e">♡</div><b>${t("empty_fav")}</b><button class="big" onclick="go('home')">${t("to_menu")}</button></div>`;
 }
 
+function ordersView() {
+  if (!orders.length) {
+    $("#ordList").innerHTML = `<div class="empty"><div class="e">🧾</div><b>${t("empty_orders")}</b><button class="big" onclick="go('home')">${t("to_menu")}</button></div>`;
+    return;
+  }
+  $("#ordList").innerHTML = orders.map((o, k) => {
+    const d = new Date(o.at), dt = d.toLocaleDateString("ru-RU") + " " + d.toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+    const its = o.items.map(({id, qty}) => { const i = byId(id); return i ? `<li>${nm(i)} × ${qty}</li>` : ""; }).join("");
+    return `<div class="box ord"><div class="h"><b>№${o.number}</b><span class="badge">${t(o.paid ? "st_paid" : "st_new")}</span></div>
+      <div class="m">${dt} · ${t(o.type === "delivery" ? "delivery" : "pickup")} · ${BR[o.branch] ? BR[o.branch][LANG] : ""}</div>
+      <ul>${its}</ul><div class="sum"><span>${t("total")}</span><span>${fmt(o.total)}</span></div>
+      <button class="big ghost" onclick="repeat(${k})">${t("repeat")}</button></div>`;
+  }).join("");
+}
+function repeat(k) {
+  for (const {id, qty} of orders[k].items) if (byId(id)) cart[id] = (cart[id] || 0) + qty;
+  store.set("puri_cart", cart); render(); go("cart");
+}
+
+function infoView(v) {
+  const el = v === "branches" ? $("#brList") : $("#ctList");
+  el.innerHTML = Object.values(BR).map(b => `<div class="box info"><h3>📍 ${b[LANG]}</h3><p>📞 ${b.phone}</p>
+    <a class="call" href="tel:${b.phone.replace(/\s/g, "")}">${t("call")}</a></div>`).join("")
+    + `<div class="box info"><p>${t("hours")}</p></div>`;
+}
+
+// ---------- Buyurtma beriş ----------
 document.querySelectorAll(".seg").forEach(s => s.onclick = e => {
-  if (!e.target.dataset.v) return;
-  s.querySelectorAll("button").forEach(b => b.classList.toggle("on", b === e.target));
-  if (s.id === "pay") $("#payHint").textContent = t(e.target.dataset.v === "cash" ? "pay_cash" : "pay_online");
-  if (s.id === "type") $("#addrBox").style.display = e.target.dataset.v === "delivery" ? "block" : "none";
+  const b = e.target.closest("button"); if (!b || !b.dataset.v) return;
+  s.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  if (s.id === "pay") $("#payHint").textContent = t(b.dataset.v === "cash" ? "pay_cash" : "pay_online");
+  if (s.id === "type") $("#addrBox").style.display = b.dataset.v === "delivery" ? "block" : "none";
 });
-const seg = id => document.querySelector(`#${id} .on`).dataset.v;
+function seg(id) { const b = document.querySelector(`#${id} .on`); return b ? b.dataset.v : ""; }
 
-function err(t) { $("#err").textContent = t; $("#err").style.display = t ? "block" : "none"; if (t && tg) tg.HapticFeedback.notificationOccurred("error"); }
+function err(m) {
+  $("#err").textContent = m; $("#err").style.display = m ? "block" : "none";
+  if (m) { $("#err").scrollIntoView({block: "center"}); if (tg) tg.HapticFeedback.notificationOccurred("error"); }
+}
 
-async function onMain() {
-  if (view === "menu") return show("cart");
-  if (view !== "cart" || sending) return;
+async function submit() {
+  if (sending || !count()) return;
   const order = {
     items: Object.entries(cart).map(([id, qty]) => ({id, qty})),
     type: seg("type"), branch: seg("branch"), pay: seg("pay"), lang: LANG,
@@ -282,24 +479,29 @@ async function onMain() {
   if (order.phone.replace(/\D/g, "").length < 9) return err(t("e_phone"));
   if (order.type === "delivery" && order.address.length < 5) return err(t("e_addr"));
   err("");
-  if (!tg || !API) { $("#doneTxt").textContent = t("e_test"); return show("done"); }
-  sending = true; update(); tg.MainButton.showProgress();
+  store.set("puri_contact", {name: order.name, phone: order.phone, address: order.address});
+  if (!tg || !API) { $("#doneTxt").textContent = t("e_test"); return go("done"); }
+  sending = true; refresh();
   try {
     const r = await fetch(API + "/order", {method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({initData: tg.initData, order})});
     const j = await r.json();
     if (!j.ok) throw new Error(j.error || "xato");
+    let paid = false;
     if (j.invoice) {
       const status = await new Promise(res => tg.openInvoice(j.invoice, res));
       if (status !== "paid") { err(t(status === "failed" ? "e_payfail" : "e_paycancel")); return; }
-      $("#doneTxt").textContent = t("e_paid")(j.number);
-    } else $("#doneTxt").textContent = t("e_ok")(j.number);
-    cart = {}; MENU.items.forEach(i => ctl(i.id));
+      paid = true;
+    }
+    orders.unshift({number: j.number, at: Date.now(), items: order.items, total: total(), type: order.type, branch: order.branch, pay: order.pay, paid});
+    orders = orders.slice(0, 30); store.set("puri_orders", orders);
+    $("#doneTxt").textContent = paid ? t("e_paid")(j.number) : t("e_ok")(j.number);
+    cart = {}; store.set("puri_cart", cart); render();
     tg.HapticFeedback.notificationOccurred("success");
-    show("done"); setTimeout(() => tg.close(), 3500);
+    go("done");
   } catch (e) {
     err(t(e.message === "pay_off" ? "e_payoff" : "e_net"));
-  } finally { sending = false; tg.MainButton.hideProgress(); update(); }
+  } finally { sending = false; refresh(); }
 }
 </script>
 </body>
