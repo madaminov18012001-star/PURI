@@ -23,8 +23,8 @@ nav button.on{background:var(--cream);color:var(--red);border-color:var(--cream)
 main{padding:4px 12px 110px}
 h2{color:var(--red);font-size:19px;margin:20px 4px 10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.it{content-visibility:auto;contain-intrinsic-size:auto 260px;background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
-.it img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--red);display:block}
+.it{content-visibility:auto;contain-intrinsic-size:auto 360px;background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(80,20,10,.08)}
+.it img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--red);display:block}
 .it .b{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
 .it .n{font-weight:600;font-size:14px;flex:1}
 .it .note{font-size:12px;color:var(--muted);margin-top:2px}
@@ -181,13 +181,13 @@ $("#lang").onclick = e => {
   applyLang(); render();
   if (view === "cart") rows();
 };
-fetch("menu.json?v=4").then(r => r.json()).then(m => { MENU = m; render(); });
+fetch("menu.json?v=5").then(r => r.json()).then(m => { MENU = m; render(); });
 
 function render() {
   $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${cn(c)}</button>`).join("");
   $("#cats").onclick = e => { const c = e.target.dataset.c; if (c) document.getElementById("c-" + c).scrollIntoView({behavior: "smooth"}); };
   $("#list").innerHTML = MENU.cats.map(c => `<h2 id="c-${c.id}">${cn(c)}</h2><div class="grid">` +
-    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" decoding="async" width="480" height="360" src="${i.img}" alt="">
+    MENU.items.filter(i => i.cat === c.id).map(i => `<div class="it"><img loading="lazy" decoding="async" width="450" height="600" src="${i.img}?v=5" alt="">
       <div class="b"><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}
       <div class="p">${fmt(i.price)}</div><div id="ctl-${i.id}"></div></div></div>`).join("") + "</div>").join("");
   MENU.items.forEach(i => ctl(i.id));
@@ -244,7 +244,7 @@ function update() {
 
 function rows() {
   $("#rows").innerHTML = Object.entries(cart).map(([id, q]) => { const i = byId(id);
-    return `<div class="row"><img src="${i.img}" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
+    return `<div class="row"><img src="${i.img}?v=5" alt=""><div class="t"><b>${nm(i)}</b>${fmt(i.price * q)}</div>
     <div class="qty"><button onclick="chg('${id}',-1)">−</button><span>${q}</span><button onclick="chg('${id}',1)">+</button></div></div>`; }).join("");
   $("#total").textContent = fmt(total());
 }
