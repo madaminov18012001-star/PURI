@@ -10,24 +10,24 @@
 
 // Filiallar. Manzil ("addr") Timur bergach yoziladi.
 const BRANCHES = {
-  Yunusobod: { uz: "Yunusobod Gallery savdo markazi", ru: "ТЦ Yunusobod Gallery", addr: { uz: "", ru: "" } },
-  Chimgan: { uz: "Çimgan savdo markazi", ru: "ТЦ Chimgan", addr: { uz: "", ru: "" } },
+  Yunusobod: { uz: "Yunusobod Gallery savdo markazi", ru: "ТЦ Yunusobod Gallery", addr: { uz: "", ru: "" }, phone: "+998 99 899 69 88" },
+  Chimgan: { uz: "Çimgan savdo markazi", ru: "ТЦ Chimgan", addr: { uz: "", ru: "" }, phone: "+998 99 437 95 29" },
 };
-const branchLine = (b, l) => b[l] + (b.addr[l] ? ` (${b.addr[l]})` : "");
+const branchLine = (b, l) => b[l] + (b.addr[l] ? ` (${b.addr[l]})` : "") + `\n📞 ${b.phone}`;
 
 const TXT = {
   uz: {
-    welcome: () => `Puriʼga xuş kelibsiz! 🇬🇪\n\nXinkali, xaçapuri va gruzin taomlari.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "uz")}\n📍 ${branchLine(BRANCHES.Chimgan, "uz")}\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosiñ, menyudan taom tanlañ va buyurtma beriñ 👇`,
+    welcome: () => `Puriʼga xuş kelibsiz! 🇬🇪\n\nXinkali, xaçapuri va gruzin taomlari.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "uz")}\n\n📍 ${branchLine(BRANCHES.Chimgan, "uz")}\n\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosiñ, menyudan taom tanlañ va buyurtma beriñ 👇`,
     open: "🍽 Menyu va buyurtma", menu: "Menyu", other: "Buyurtma beriş uçun menyuni oçiñ 👇",
-    accepted: "✅ <b>Buyurtmañiz qabul qilindi!</b>", call: "Operatorimiz tez orada qõnğiroq qiladi.",
+    accepted: "✅ <b>Buyurtmañiz qabul qilindi!</b>", call: "Operatorimiz tez orada qõnğiroq qiladi.", ask: "Savollar uçun filial telefoni",
     paid: n => `✅ Tõlov qabul qilindi! Buyurtma №${n} tayyorlanmoqda. Operatorimiz tez orada qõnğiroq qiladi.`,
     order: "Buyurtma", total: "Jami", del: "🚗 Yetkazib beriş", pick: "🏃 Olib ketiş", fee: " (yetkaziş narxi alohida)", payw: "Tõlov",
     pay: { click: "Click", payme: "Payme", cash: "Naqd yoki karta (qabul qilişda)" }, sum: "sõm",
   },
   ru: {
-    welcome: () => `Добро пожаловать в Puri! 🇬🇪\n\nХинкали, хачапури и блюда грузинской кухни.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "ru")}\n📍 ${branchLine(BRANCHES.Chimgan, "ru")}\n🕙 Ежедневно 10:00–22:00\n\nНажмите кнопку ниже, выберите блюда в меню и оформите заказ 👇`,
+    welcome: () => `Добро пожаловать в Puri! 🇬🇪\n\nХинкали, хачапури и блюда грузинской кухни.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "ru")}\n\n📍 ${branchLine(BRANCHES.Chimgan, "ru")}\n\n🕙 Ежедневно 10:00–22:00\n\nНажмите кнопку ниже, выберите блюда в меню и оформите заказ 👇`,
     open: "🍽 Меню и заказ", menu: "Меню", other: "Чтобы сделать заказ, откройте меню 👇",
-    accepted: "✅ <b>Ваш заказ принят!</b>", call: "Наш оператор скоро вам позвонит.",
+    accepted: "✅ <b>Ваш заказ принят!</b>", call: "Наш оператор скоро вам позвонит.", ask: "Телефон филиала",
     paid: n => `✅ Оплата получена! Заказ №${n} готовится. Наш оператор скоро вам позвонит.`,
     order: "Заказ", total: "Итого", del: "🚗 Доставка", pick: "🏃 Самовывоз", fee: " (доставка оплачивается отдельно)", payw: "Оплата",
     pay: { click: "Click", payme: "Payme", cash: "Наличные или карта (при получении)" }, sum: "сум",
@@ -164,7 +164,7 @@ async function order(req, env) {
     if (!sent.ok) return json({ ok: false, error: "send" }, 502);
     await tg(env, "sendMessage", {
       chat_id: user.id, parse_mode: "HTML",
-      text: `${TXT[L].accepted}\n\n${mk(L)}\n\n${TXT[L].call}`,
+      text: `${TXT[L].accepted}\n\n${mk(L)}\n\n${TXT[L].call}\n📞 ${TXT[L].ask}: ${br.phone}`,
     });
     return json({ ok: true, number });
   }
