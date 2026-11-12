@@ -11,18 +11,18 @@
 // Filiallar. Manzil ("addr") Timur bergach yoziladi.
 const BRANCHES = {
   Yunusobod: { uz: "Yunusobod Gallery savdo markazi", ru: "ТЦ Yunusobod Gallery", addr: { uz: "", ru: "" } },
-  Chimgan: { uz: "Chimgan savdo markazi", ru: "ТЦ Chimgan", addr: { uz: "", ru: "" } },
+  Chimgan: { uz: "Çimgan savdo markazi", ru: "ТЦ Chimgan", addr: { uz: "", ru: "" } },
 };
 const branchLine = (b, l) => b[l] + (b.addr[l] ? ` (${b.addr[l]})` : "");
 
 const TXT = {
   uz: {
-    welcome: () => `Puriʼga xush kelibsiz! 🇬🇪\n\nXinkali, xachapuri va gruzin taomlari.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "uz")}\n📍 ${branchLine(BRANCHES.Chimgan, "uz")}\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosing, menyudan taom tanlang va buyurtma bering 👇`,
-    open: "🍽 Menyu va buyurtma", menu: "Menyu", other: "Buyurtma berish uchun menyuni oching 👇",
-    accepted: "✅ <b>Buyurtmangiz qabul qilindi!</b>", call: "Operatorimiz tez orada qoʻngʻiroq qiladi.",
-    paid: n => `✅ Toʻlov qabul qilindi! Buyurtma №${n} tayyorlanmoqda. Operatorimiz tez orada qoʻngʻiroq qiladi.`,
-    order: "Buyurtma", total: "Jami", del: "🚗 Yetkazib berish", pick: "🏃 Olib ketish", fee: " (yetkazish narxi alohida)", payw: "Toʻlov",
-    pay: { click: "Click", payme: "Payme", cash: "Naqd yoki karta (qabul qilishda)" }, sum: "soʻm",
+    welcome: () => `Puriʼga xuş kelibsiz! 🇬🇪\n\nXinkali, xaçapuri va gruzin taomlari.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "uz")}\n📍 ${branchLine(BRANCHES.Chimgan, "uz")}\n🕙 Har kuni 10:00–22:00\n\nPastdagi tugmani bosiñ, menyudan taom tanlañ va buyurtma beriñ 👇`,
+    open: "🍽 Menyu va buyurtma", menu: "Menyu", other: "Buyurtma beriş uçun menyuni oçiñ 👇",
+    accepted: "✅ <b>Buyurtmañiz qabul qilindi!</b>", call: "Operatorimiz tez orada qõnğiroq qiladi.",
+    paid: n => `✅ Tõlov qabul qilindi! Buyurtma №${n} tayyorlanmoqda. Operatorimiz tez orada qõnğiroq qiladi.`,
+    order: "Buyurtma", total: "Jami", del: "🚗 Yetkazib beriş", pick: "🏃 Olib ketiş", fee: " (yetkaziş narxi alohida)", payw: "Tõlov",
+    pay: { click: "Click", payme: "Payme", cash: "Naqd yoki karta (qabul qilişda)" }, sum: "sõm",
   },
   ru: {
     welcome: () => `Добро пожаловать в Puri! 🇬🇪\n\nХинкали, хачапури и блюда грузинской кухни.\n\n📍 ${branchLine(BRANCHES.Yunusobod, "ru")}\n📍 ${branchLine(BRANCHES.Chimgan, "ru")}\n🕙 Ежедневно 10:00–22:00\n\nНажмите кнопку ниже, выберите блюда в меню и оформите заказ 👇`,
@@ -35,7 +35,7 @@ const TXT = {
 };
 const langOf = u => (u && u.language_code === "ru" ? "ru" : "uz");
 const appUrl = (env, l) => { const u = new URL(env.WEBAPP_URL); u.searchParams.set("lang", l); return u.toString(); };
-const langRow = [{ text: "🇺🇿 Oʻzbekcha", callback_data: "lang:uz" }, { text: "🇷🇺 Русский", callback_data: "lang:ru" }];
+const langRow = [{ text: "🇺🇿 Õzbekça", callback_data: "lang:uz" }, { text: "🇷🇺 Русский", callback_data: "lang:ru" }];
 
 export default {
   async fetch(req, env) {
@@ -75,7 +75,7 @@ async function setup(url, env) {
   const out = {
     webhook: await tg(env, "setWebhook", { url: hook, secret_token: env.SETUP_KEY, allowed_updates: ["message", "pre_checkout_query", "callback_query"] }),
     menu: await tg(env, "setChatMenuButton", { menu_button: { type: "web_app", text: "Menyu", web_app: { url: appUrl(env, "uz") } } }),
-    commands: await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Boshlash" }, { command: "menu", description: "Menyu" }] }),
+    commands: await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Boşlaş" }, { command: "menu", description: "Menyu" }] }),
     commands_ru: await tg(env, "setMyCommands", { language_code: "ru", commands: [{ command: "start", description: "Начать" }, { command: "menu", description: "Меню" }] }),
   };
   return json(out);
@@ -152,8 +152,8 @@ async function order(req, env) {
 
   const row = {
     action: "add", number, date: new Date().toLocaleString("ru-RU", { timeZone: "Asia/Tashkent" }),
-    branch: br.uz, type: delivery ? "Yetkazib berish" : "Olib ketish",
-    items: plain.join(", "), total, pay: PAY[pay], status: pay === "cash" ? "Yangi" : "Toʻlov kutilmoqda",
+    branch: br.uz, type: delivery ? "Yetkazib berish" : "Olib ketiş",
+    items: plain.join(", "), total, pay: PAY[pay], status: pay === "cash" ? "Yañi" : "Tõlov kutilmoqda",
     name: clip(order.name, 60), phone: clip(order.phone, 30), address: delivery ? clip(order.address, 300) : "",
     note: clip(order.note, 300), telegram: user.username ? "@" + user.username : String(user.id),
   };
@@ -193,9 +193,9 @@ async function onPaid(m, env) {
   await tg(env, "sendMessage", {
     chat_id: env.ORDERS_CHAT_ID, parse_mode: "HTML",
     reply_parameters: copy.ok ? { message_id: copy.result.message_id } : undefined,
-    text: `🆕✅ <b>№${number} TOʻLANDI</b> · ${PAY[pay] || pay} · ${money(p.total_amount / 100)}`,
+    text: `🆕✅ <b>№${number} TÕLANDI</b> · ${PAY[pay] || pay} · ${money(p.total_amount / 100)}`,
   });
-  await sheet(env, { action: "paid", number, status: `Toʻlandi (${PAY[pay] || pay})` });
+  await sheet(env, { action: "paid", number, status: `Tõlandi (${PAY[pay] || pay})` });
   await tg(env, "sendMessage", { chat_id: m.chat.id, text: TXT[L].paid(number) });
 }
 

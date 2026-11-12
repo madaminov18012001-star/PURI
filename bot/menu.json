@@ -7,7 +7,7 @@
   },
   {
    "id": "xachapuri",
-   "name": "Xachapuri",
+   "name": "Xaçapuri",
    "name_ru": "Хачапури"
   },
   {
@@ -22,7 +22,7 @@
   },
   {
    "id": "shorva",
-   "name": "Shoʻrvalar",
+   "name": "Şõrvalar",
    "name_ru": "Супы"
   },
   {
@@ -37,12 +37,12 @@
   },
   {
    "id": "nonushta",
-   "name": "Nonushta",
+   "name": "Nonuşta",
    "name_ru": "Завтраки"
   },
   {
    "id": "ichimlik",
-   "name": "Ichimliklar",
+   "name": "Içimliklar",
    "name_ru": "Напитки"
   }
  ],
@@ -50,7 +50,7 @@
   {
    "id": "x1",
    "cat": "xinkali",
-   "name": "Mol goʻshtli xinkali",
+   "name": "Mol gõştli xinkali",
    "ru": "Хинкали из говядины",
    "price": 14000,
    "note": "1 dona narxi",
@@ -60,7 +60,7 @@
   {
    "id": "x2",
    "cat": "xinkali",
-   "name": "Qoʻziqorinli xinkali",
+   "name": "Qõziqorinli xinkali",
    "ru": "Хинкали с грибами",
    "price": 17000,
    "note": "1 dona narxi",
@@ -70,7 +70,7 @@
   {
    "id": "x3",
    "cat": "xinkali",
-   "name": "Pomidor va pishloqli xinkali",
+   "name": "Pomidor va pişloqli xinkali",
    "ru": "Хинкали с помидором и сыром",
    "price": 14000,
    "note": "1 dona narxi",
@@ -80,7 +80,7 @@
   {
    "id": "x4",
    "cat": "xinkali",
-   "name": "Kartoshka va pishloqli xinkali",
+   "name": "Kartoşka va pişloqli xinkali",
    "ru": "Хинкали с картофелем и сыром",
    "price": 10000,
    "note": "1 dona narxi",
@@ -90,7 +90,7 @@
   {
    "id": "h1",
    "cat": "xachapuri",
-   "name": "Adjaruli xachapuri",
+   "name": "Adjaruli xaçapuri",
    "ru": "Хачапури по-аджарски",
    "price": 49000,
    "note": "",
@@ -100,7 +100,7 @@
   {
    "id": "h2",
    "cat": "xachapuri",
-   "name": "Pomidorli xachapuri",
+   "name": "Pomidorli xaçapuri",
    "ru": "Хачапури с помидором",
    "price": 58000,
    "note": "",
@@ -110,7 +110,7 @@
   {
    "id": "h3",
    "cat": "xachapuri",
-   "name": "Pinovani xachapuri",
+   "name": "Pinovani xaçapuri",
    "ru": "Хачапури пинована",
    "price": 43000,
    "note": "",
@@ -120,7 +120,7 @@
   {
    "id": "h4",
    "cat": "xachapuri",
-   "name": "Megruli xachapuri",
+   "name": "Megruli xaçapuri",
    "ru": "Хачапури по-мегрельски",
    "price": 52000,
    "note": "",
@@ -130,7 +130,7 @@
   {
    "id": "h5",
    "cat": "xachapuri",
-   "name": "Imeruli xachapuri",
+   "name": "Imeruli xaçapuri",
    "ru": "Хачапури по-имеретински",
    "price": 42000,
    "note": "",
@@ -150,7 +150,7 @@
   {
    "id": "g2",
    "cat": "grill",
-   "name": "Mol goʻshtli Puri",
+   "name": "Mol gõştli Puri",
    "ru": "Puri из говядины",
    "price": 39000,
    "note": "",
@@ -160,7 +160,7 @@
   {
    "id": "g3",
    "cat": "grill",
-   "name": "Buzoq goʻshtidan shashlik",
+   "name": "Buzoq gõştidan şaşlik",
    "ru": "Шашлык из телятины",
    "price": 20000,
    "note": "1 sixi narxi",
@@ -170,7 +170,7 @@
   {
    "id": "g4",
    "cat": "grill",
-   "name": "Qoʻy goʻshtidan shashlik",
+   "name": "Qõy gõştidan şaşlik",
    "ru": "Шашлык из баранины",
    "price": 22000,
    "note": "1 sixi narxi",
@@ -180,7 +180,7 @@
   {
    "id": "g5",
    "cat": "grill",
-   "name": "Buzoq goʻshtidan shashlik (2-tur)",
+   "name": "Buzoq gõştidan şaşlik (2-tur)",
    "ru": "Шашлык из телятины",
    "price": 20000,
    "note": "1 sixi narxi",
@@ -190,7 +190,7 @@
   {
    "id": "g6",
    "cat": "grill",
-   "name": "Tovuq shashlik",
+   "name": "Tovuq şaşlik",
    "ru": "Шашлык куриный",
    "price": 14000,
    "note": "1 sixi narxi",
@@ -200,7 +200,7 @@
   {
    "id": "g7",
    "cat": "grill",
-   "name": "Shashlik assorti",
+   "name": "Şaşlik assorti",
    "ru": "Шашлык ассорти",
    "price": 135000,
    "note": "",
@@ -220,7 +220,7 @@
   {
    "id": "g9",
    "cat": "grill",
-   "name": "Mol goʻshtli vrap",
+   "name": "Mol gõştli vrap",
    "ru": "Врап из говядины",
    "price": 39000,
    "note": "",
@@ -240,7 +240,7 @@
   {
    "id": "g11",
    "cat": "grill",
-   "name": "Kartoshka fri",
+   "name": "Kartoşka fri",
    "ru": "Картофель фри",
    "price": 25000,
    "note": "",
@@ -250,7 +250,7 @@
   {
    "id": "i1",
    "cat": "issiq",
-   "name": "Uy usulida kartoshka",
+   "name": "Uy usulida kartoşka",
    "ru": "Картофель по-домашнему",
    "price": 63000,
    "note": "",
@@ -260,7 +260,7 @@
   {
    "id": "i2",
    "cat": "issiq",
-   "name": "Buzoq goʻshti teriyaki",
+   "name": "Buzoq gõşti teriyaki",
    "ru": "Телятина терияки",
    "price": 68000,
    "note": "",
@@ -280,17 +280,17 @@
   {
    "id": "i4",
    "cat": "issiq",
-   "name": "Shefdan dimlangan goʻsht",
+   "name": "Şefdan dimlangan gõşt",
    "ru": "Тушёное мясо от шефа",
    "price": 125000,
-   "note": "2 kishilik",
+   "note": "2 kişilik",
    "img": "img/i4.jpg",
    "note_ru": "на 2 персоны"
   },
   {
    "id": "i5",
    "cat": "issiq",
-   "name": "Qaymoqli qoʻziqorin sousida tovuq, guruch bilan",
+   "name": "Qaymoqli qõziqorin sousida tovuq, guruç bilan",
    "ru": "Курица в сливочно-грибном соусе с рисом",
    "price": 53000,
    "note": "",
@@ -320,7 +320,7 @@
   {
    "id": "i8",
    "cat": "issiq",
-   "name": "Qishloqcha kartoshka bilan forel",
+   "name": "Qişloqça kartoşka bilan forel",
    "ru": "Форель с картофелем по-деревенски",
    "price": 98000,
    "note": "",
@@ -330,7 +330,7 @@
   {
    "id": "s1",
    "cat": "shorva",
-   "name": "Xarcho shoʻrva",
+   "name": "Xarço şõrva",
    "ru": "Суп харчо",
    "price": 38000,
    "note": "",
@@ -340,7 +340,7 @@
   {
    "id": "s2",
    "cat": "shorva",
-   "name": "Frikadelkali shoʻrva",
+   "name": "Frikadelkali şõrva",
    "ru": "Суп с фрикадельками",
    "price": 28000,
    "note": "",
@@ -350,7 +350,7 @@
   {
    "id": "a1",
    "cat": "salat",
-   "name": "Pishloqli baqlajon ruletlari",
+   "name": "Pişloqli baqlajon ruletlari",
    "ru": "Рулетики из баклажан с сыром",
    "price": 33000,
    "note": "",
@@ -360,7 +360,7 @@
   {
    "id": "a2",
    "cat": "salat",
-   "name": "Gruzincha salat",
+   "name": "Gruzinça salat",
    "ru": "Салат грузинский",
    "price": 38000,
    "note": "",
@@ -420,7 +420,7 @@
   {
    "id": "n1",
    "cat": "non",
-   "name": "Gruzincha lavash",
+   "name": "Gruzinça lavaş",
    "ru": "Лаваш по-грузински",
    "price": 49000,
    "note": "",
@@ -430,7 +430,7 @@
   {
    "id": "n2",
    "cat": "non",
-   "name": "Shoti noni",
+   "name": "Şoti noni",
    "ru": "Шоти",
    "price": 10000,
    "note": "",
@@ -440,7 +440,7 @@
   {
    "id": "n3",
    "cat": "non",
-   "name": "Pishloqli lamajo",
+   "name": "Pişloqli lamajo",
    "ru": "Ламаджо с сыром",
    "price": 59000,
    "note": "",
@@ -460,7 +460,7 @@
   {
    "id": "b2",
    "cat": "nonushta",
-   "name": "Gruzincha nonushta",
+   "name": "Gruzinça nonuşta",
    "ru": "Завтрак по-грузински",
    "price": 58000,
    "note": "",
@@ -470,7 +470,7 @@
   {
    "id": "b3",
    "cat": "nonushta",
-   "name": "Chirbuli (shakshuka)",
+   "name": "Çirbuli (şakşuka)",
    "ru": "Чирбули по-аджарски (шакшука)",
    "price": 33000,
    "note": "",
@@ -550,7 +550,7 @@
   {
    "id": "d7",
    "cat": "ichimlik",
-   "name": "Limonli qora choy",
+   "name": "Limonli qora çoy",
    "ru": "Чай чёрный с лимоном",
    "price": 25000,
    "note": "",
@@ -560,7 +560,7 @@
   {
    "id": "d8",
    "cat": "ichimlik",
-   "name": "Malinali choy",
+   "name": "Malinali çoy",
    "ru": "Чай малиновый",
    "price": 35000,
    "note": "",
@@ -570,7 +570,7 @@
   {
    "id": "d9",
    "cat": "ichimlik",
-   "name": "Rezavorli choy",
+   "name": "Rezavorli çoy",
    "ru": "Чай ягодный",
    "price": 35000,
    "note": "",
@@ -580,7 +580,7 @@
   {
    "id": "d10",
    "cat": "ichimlik",
-   "name": "Yashil choy",
+   "name": "Yaşil çoy",
    "ru": "Чай зелёный",
    "price": 15000,
    "note": "",
@@ -590,7 +590,7 @@
   {
    "id": "d11",
    "cat": "ichimlik",
-   "name": "Qora choy",
+   "name": "Qora çoy",
    "ru": "Чай чёрный",
    "price": 15000,
    "note": "",

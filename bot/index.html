@@ -74,24 +74,24 @@ textarea{min-height:64px;resize:vertical}
 
   <fieldset><label data-t="how">Qanday olasiz?</label>
     <div class="seg" id="type">
-      <button data-v="delivery" class="on" data-t="delivery">Yetkazib berish</button>
+      <button data-v="delivery" class="on" data-t="delivery">Yetkazib beriş</button>
       <button data-v="pickup" data-t="pickup">Olib ketaman</button>
     </div>
   </fieldset>
   <fieldset><label data-t="branch">Filial</label>
     <div class="seg" id="branch">
       <button data-v="Yunusobod" class="on" data-t="b_yun">Yunusobod Gallery</button>
-      <button data-v="Chimgan" data-t="b_chim">Chimgan SM</button>
+      <button data-v="Chimgan" data-t="b_chim">Çimgan SM</button>
     </div>
   </fieldset>
-  <fieldset><label data-t="pay">Toʻlov usuli</label>
+  <fieldset><label data-t="pay">Tõlov usuli</label>
     <div class="seg" id="pay">
       <button data-v="click" class="on">Click</button>
       <button data-v="payme">Payme</button>
       <button data-v="cash" data-t="cash">Naqd / karta</button>
     </div>
     <div class="hint" id="payHint"></div></fieldset>
-  <fieldset><label for="name" data-t="name">Ismingiz</label><input id="name" autocomplete="name"></fieldset>
+  <fieldset><label for="name" data-t="name">Ismiñiz</label><input id="name" autocomplete="name"></fieldset>
   <fieldset><label for="phone" data-t="phone">Telefon raqam</label><input id="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel"></fieldset>
   <fieldset id="addrBox"><label for="addr" data-t="addr">Manzil</label><textarea id="addr" data-ph="addr_ph"></textarea>
     <div class="hint" data-t="addr_hint"></div></fieldset>
@@ -114,18 +114,18 @@ let MENU = {cats: [], items: []}, cart = {}, view = "menu", sending = false;
 let heads = [], curId = "", ticking = false, scrollBound = false;
 const $ = s => document.querySelector(s);
 const T = {
-  uz: {back:"← Menyu", cart:"Savat", total:"Jami", how:"Qanday olasiz?", delivery:"Yetkazib berish", pickup:"Olib ketaman",
-    branch:"Filial", b_yun:"Yunusobod Gallery", b_chim:"Chimgan SM", pay:"Toʻlov usuli", cash:"Naqd / karta",
-    pay_online:"Buyurtma berish tugmasini bosganingizda toʻlov oynasi ochiladi.", pay_cash:"Pulni buyurtmani qabul qilganda toʻlaysiz.",
-    name:"Ismingiz", phone:"Telefon raqam", addr:"Manzil", addr_ph:"Koʻcha, uy, xonadon, moʻljal",
-    addr_hint:"Yetkazish narxi va vaqtini operator qoʻngʻiroq qilib aytadi.", note:"Izoh (ixtiyoriy)", note_ph:"Masalan: achchiq boʻlmasin",
-    done:"Buyurtma qabul qilindi!", done_txt:"Operatorimiz tez orada siz bilan bogʻlanadi.", add:"Qoʻshish", sum:"soʻm", pcs:"ta",
-    bar_cart:"Savat", bar_order:"Buyurtma berish", sending:"Yuborilmoqda...",
-    e_name:"Ismingizni yozing.", e_phone:"Telefon raqamni toʻliq yozing.", e_addr:"Yetkazish manzilini yozing.",
-    e_test:"Bu sinov rejimi: buyurtma faqat Telegram ichida yuboriladi.", e_paid:n=>`Buyurtma №${n} toʻlandi. Operatorimiz tez orada siz bilan bogʻlanadi.`,
-    e_ok:n=>`Buyurtma №${n}. Operatorimiz tez orada siz bilan bogʻlanadi.`, e_payfail:"Toʻlov oʻtmadi. Qayta urinib koʻring yoki boshqa usulni tanlang.",
-    e_paycancel:"Toʻlov yakunlanmadi. Qayta urinib koʻring yoki boshqa usulni tanlang.", e_payoff:"Bu toʻlov usuli hali ulanmagan. Boshqa usulni tanlang.",
-    e_net:"Buyurtma yuborilmadi. Internetni tekshirib, qayta urinib koʻring."},
+  uz: {back:"← Menyu", cart:"Savat", total:"Jami", how:"Qanday olasiz?", delivery:"Yetkazib beriş", pickup:"Olib ketaman",
+    branch:"Filial", b_yun:"Yunusobod Gallery", b_chim:"Çimgan SM", pay:"Tõlov usuli", cash:"Naqd / karta",
+    pay_online:"Buyurtma beriş tugmasini bosganiñizda tõlov oynasi oçiladi.", pay_cash:"Pulni buyurtmani qabul qilganda tõlaysiz.",
+    name:"Ismiñiz", phone:"Telefon raqam", addr:"Manzil", addr_ph:"Kõça, uy, xonadon, mõljal",
+    addr_hint:"Yetkaziş narxi va vaqtini operator qõnğiroq qilib aytadi.", note:"Izoh (ixtiyoriy)", note_ph:"Masalan: aççiq bõlmasin",
+    done:"Buyurtma qabul qilindi!", done_txt:"Operatorimiz tez orada siz bilan boğlanadi.", add:"Qõşiş", sum:"sõm", pcs:"ta",
+    bar_cart:"Savat", bar_order:"Buyurtma beriş", sending:"Yuborilmoqda...",
+    e_name:"Ismiñizni yoziñ.", e_phone:"Telefon raqamni tõliq yoziñ.", e_addr:"Yetkaziş manzilini yoziñ.",
+    e_test:"Bu sinov rejimi: buyurtma faqat Telegram içida yuboriladi.", e_paid:n=>`Buyurtma №${n} tõlandi. Operatorimiz tez orada siz bilan boğlanadi.`,
+    e_ok:n=>`Buyurtma №${n}. Operatorimiz tez orada siz bilan boğlanadi.`, e_payfail:"Tõlov õtmadi. Qayta urinib kõriñ yoki boşqa usulni tanlañ.",
+    e_paycancel:"Tõlov yakunlanmadi. Qayta urinib kõriñ yoki boşqa usulni tanlañ.", e_payoff:"Bu tõlov usuli hali ulanmagan. Boşqa usulni tanlañ.",
+    e_net:"Buyurtma yuborilmadi. Internetni tekşirib, qayta urinib kõriñ."},
   ru: {back:"← Меню", cart:"Корзина", total:"Итого", how:"Как получить заказ?", delivery:"Доставка", pickup:"Самовывоз",
     branch:"Филиал", b_yun:"Yunusobod Gallery", b_chim:"ТЦ Chimgan", pay:"Способ оплаты", cash:"Наличные / карта",
     pay_online:"После нажатия «Оформить заказ» откроется окно оплаты.", pay_cash:"Оплата при получении заказа.",
@@ -181,7 +181,7 @@ $("#lang").onclick = e => {
   applyLang(); render();
   if (view === "cart") rows();
 };
-fetch("menu.json?v=5").then(r => r.json()).then(m => { MENU = m; render(); });
+fetch("menu.json?v=6").then(r => r.json()).then(m => { MENU = m; render(); });
 
 function render() {
   $("#cats").innerHTML = MENU.cats.map((c, i) => `<button data-c="${c.id}" class="${i ? "" : "on"}">${cn(c)}</button>`).join("");

@@ -1,7 +1,7 @@
 // Puri buyurtmalar bazasi: Google Sheets → Kengaytmalar → Apps Script ga qoʻyiladi.
 // KEY o'rniga Cloudflare'dagi SETUP_KEY yoziladi.
 const KEY = "SETUP_KEY_SHU_YERGA";
-const HEAD = ["Sana", "№", "Filial", "Turi", "Taomlar", "Jami (so'm)", "To'lov", "Holat", "Mijoz", "Telefon", "Manzil", "Izoh", "Telegram"];
+const HEAD = ["Sana", "№", "Filial", "Turi", "Taomlar", "Jami (sõm)", "Tõlov", "Holat", "Mijoz", "Telefon", "Manzil", "Izoh", "Telegram"];
 
 function doPost(e) {
   const d = JSON.parse(e.postData.contents);
