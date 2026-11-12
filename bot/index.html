@@ -36,9 +36,9 @@ h2{font-size:20px;margin:20px 4px 12px}
 
 /* Taom kartalari */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px}
-.it{content-visibility:auto;contain-intrinsic-size:auto 330px}
+.it{content-visibility:auto;contain-intrinsic-size:auto 260px}
 .ph{position:relative;border-radius:16px;overflow:hidden;background:var(--red)}
-.ph img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.ph img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;display:block}
 .fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:#b9aea7;padding:0}
 .fav.on{color:var(--red)}
 .ctl{position:absolute;right:8px;bottom:8px}
@@ -309,7 +309,7 @@ fetch("menu.json?v=7").then(r => r.json()).then(m => {
 
 // ---------- Menyu ----------
 function card(i) {
-  return `<div class="it"><div class="ph"><img loading="lazy" decoding="async" width="450" height="600" src="${i.img}?v=5" alt="">
+  return `<div class="it"><div class="ph"><img loading="lazy" decoding="async" width="450" height="450" src="${i.img}?v=5" alt="">
     <button class="fav${favs.includes(i.id) ? " on" : ""}" data-fav="${i.id}" aria-label="♥">${HEART}</button>
     <div class="ctl" data-ctl="${i.id}">${ctlHtml(i.id)}</div></div>
     <div class="p">${fmt(i.price)}</div><div class="n">${nm(i)}</div>${nt(i) ? `<div class="note">${nt(i)}</div>` : ""}</div>`;
